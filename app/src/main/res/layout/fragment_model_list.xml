@@ -10,7 +10,7 @@
     android:layout_marginRight="8dp"
     app:layoutManager="LinearLayoutManager"
     tools:context=".ModelFragment"
-    tools:listitem="@layout/fragment_tops">
+    tools:listitem="@layout/list_item_clothing">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/tops_RecyclerView"
@@ -19,7 +19,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/fragment_tops" />
+        tools:listitem="@layout/list_item_clothing" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/bottoms_RecyclerView"
@@ -28,6 +28,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/fragment_bottoms"/>
+        tools:listitem="@layout/list_item_clothing"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
