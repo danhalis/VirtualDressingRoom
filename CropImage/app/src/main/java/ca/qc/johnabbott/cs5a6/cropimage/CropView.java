@@ -21,16 +21,17 @@ import java.util.List;
 
 public class CropView extends View implements View.OnTouchListener {
 
+    private static final int MIN_POINTS = 12;
     private static final int STROKE_WIDTH = 5;
     private static final int DASH_LENGTH = 10;
     private static final int DASH_GAP = 5;
 
     private final Paint paint;
-    public static List<Point> points;
+    private final Path path;
+    private static List<Point> points;
 
     private boolean flgPathDraw = true;
 
-    int DIST = 2;
     private Point mFirstPoint = null;
     private Point mLastPoint = null;
 
@@ -60,10 +61,16 @@ public class CropView extends View implements View.OnTouchListener {
         paint.setStrokeWidth(STROKE_WIDTH);
         paint.setColor(Color.WHITE);
 
+        path = new Path();
+
         this.setOnTouchListener(this);
         points = new ArrayList<>();
 
         didRegisterFirstPoint = false;
+    }
+
+    public static List<Point> getPoints() {
+        return points;
     }
 
     //    public CropView(Context context, AttributeSet attrs) {
@@ -135,11 +142,12 @@ public class CropView extends View implements View.OnTouchListener {
             mLastPoint = point;
 
             if (flgPathDraw) {
-                if (points.size() > 12) {
+                if (points.size() >= MIN_POINTS) {
                     //
                     if (!comparePoints(mFirstPoint, mLastPoint)) {
                         flgPathDraw = false;
                         points.add(mFirstPoint);
+
                         showCropDialog();
                     }
                 }
@@ -153,18 +161,22 @@ public class CropView extends View implements View.OnTouchListener {
     public void onDraw(Canvas canvas) {
         canvas.drawBitmap(bitmap, 0, 0, null);
 
-        Path path = new Path();
         boolean first = true;
 
         for (int i = 0; i < points.size(); i += 2) {
             Point point = points.get(i);
+
+            // if this is the first registered point
             if (first) {
                 first = false;
                 path.moveTo(point.x, point.y);
-            } else if (i < points.size() - 1) {
+            }
+            else if (i < points.size() - 1) {
                 Point next = points.get(i + 1);
                 path.quadTo(point.x, point.y, next.x, next.y);
-            } else {
+            }
+            // if this is the last registered point
+            else {
                 mLastPoint = points.get(i);
                 path.lineTo(point.x, point.y);
             }
@@ -172,28 +184,32 @@ public class CropView extends View implements View.OnTouchListener {
         canvas.drawPath(path, paint);
     }
 
-    private boolean comparePoints(Point first, Point current) {
-        int left_range_x = (int) (current.x - 3);
-        int left_range_y = (int) (current.y - 3);
+    private boolean comparePoints(Point first, Point second) {
+        int left_range_x = (int) (second.x - 3);
+        int left_range_y = (int) (second.y - 3);
 
-        int right_range_x = (int) (current.x + 3);
-        int right_range_y = (int) (current.y + 3);
+        int right_range_x = (int) (second.x + 3);
+        int right_range_y = (int) (second.y + 3);
 
         if ((left_range_x < first.x && first.x < right_range_x)
                 && (left_range_y < first.y && first.y < right_range_y)) {
-            if (points.size() < 10) {
+
+            if (points.size() < MIN_POINTS) {
                 return false;
-            } else {
+            }
+            else {
                 return true;
             }
-        } else {
+        }
+        else {
             return false;
         }
     }
 
     private void showCropDialog() {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-            @Override            public void onClick(DialogInterface dialog, int which) {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
                 Intent intent;
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
