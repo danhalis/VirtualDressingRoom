@@ -9,15 +9,23 @@
         android:id="@+id/modelFragment"
         android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.ui.list.ModelFragment"
         android:label="fragment_model_list"
-        tools:layout="@layout/fragment_model_list" />
+        tools:layout="@layout/fragment_model_list" >
+        <action
+            android:id="@+id/action_modelFragment_to_selectPhotoOptionsFragment"
+            app:destination="@id/selectPhotoOptionsFragment" />
+    </fragment>
     <fragment
-        android:id="@+id/editPhotoFragment"
-        android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.EditPhotoFragment"
-        android:label="fragment_edit_photo"
-        tools:layout="@layout/fragment_edit_photo" />
+        android:id="@+id/selectPhotoOptionsFragment"
+        android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.SelectPhotoOptionsFragment"
+        android:label="fragment_select_photo_options"
+        tools:layout="@layout/fragment_select_photo_options" >
+        <action
+            android:id="@+id/action_selectPhotoOptionsFragment_to_cameraFragment"
+            app:destination="@id/cameraFragment" />
+    </fragment>
     <fragment
-        android:id="@+id/cropPhotoFragment"
-        android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.CropPhotoFragment"
-        android:label="fragment_crop_photo"
-        tools:layout="@layout/fragment_crop_photo" />
+        android:id="@+id/cameraFragment"
+        android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.CameraFragment"
+        android:label="fragment_camera"
+        tools:layout="@layout/fragment_camera" />
 </navigation>

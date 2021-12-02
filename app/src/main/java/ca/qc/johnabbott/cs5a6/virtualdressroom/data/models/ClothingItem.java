@@ -15,6 +15,7 @@ public class ClothingItem
         this.setId((long) id);
         this.setType(type);
         this.setStatus(ClothingStatus.AVAILABLE);
+        //this.setImage(image);
     }
 
 
