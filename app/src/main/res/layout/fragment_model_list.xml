@@ -28,6 +28,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:listitem="@layout/list_item_clothing"/>
+        app:layout_constraintVertical_bias="0.0"
+        tools:listitem="@layout/list_item_clothing" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
