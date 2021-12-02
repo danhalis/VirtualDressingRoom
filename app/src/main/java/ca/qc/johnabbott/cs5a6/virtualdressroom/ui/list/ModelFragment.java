@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
@@ -13,6 +15,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.databinding.FragmentModelListBinding;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingItem;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingType;
@@ -61,6 +65,13 @@ public class ModelFragment extends Fragment
         binding = FragmentModelListBinding.inflate(inflater, container, false);
 
         Context context = getContext();
+
+        binding.headButtonImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).getNavController().navigate(R.id.action_modelFragment_to_selectPhotoOptionsFragment);
+            }
+        });
 
         binding.topsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         binding.bottomsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
