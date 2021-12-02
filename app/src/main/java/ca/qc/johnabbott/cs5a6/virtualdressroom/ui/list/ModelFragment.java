@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.databinding.FragmentModelListBinding;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingItem;
@@ -68,8 +69,7 @@ public class ModelFragment extends Fragment
         binding.headButtonImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //NavController controller = Navigation.findNavController(getActivity(), R.id.nav_host_fragment_content_main);
-                //controller.navigate(R.id.action_taskListFragment_to_taskEditFragment);
+                ((MainActivity)getActivity()).getNavController().navigate(R.id.action_modelFragment_to_selectPhotoOptionsFragment);
             }
         });
 
