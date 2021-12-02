@@ -46,16 +46,13 @@ public class SelectPhotoOptionsFragment extends Fragment {
         binding.SelectPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                NavController controller = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_content_main);
-                controller.navigate(R.id.action_selectPhotoOptionsFragment_to_selectPhotoFragment);
+                // Navigate To Gallery Fragment.
             }
         });
         binding.CameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NavController controller = Navigation.findNavController(mainActivity, R.id.nav_host_fragment_content_main);
-                controller.navigate(R.id.action_selectPhotoOptionsFragment_to_cameraFragment);
+                mainActivity.getNavController().navigate(R.id.action_selectPhotoOptionsFragment_to_cameraFragment);
             }
         });
     }
