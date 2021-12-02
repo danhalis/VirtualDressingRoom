@@ -57,7 +57,7 @@ public class ClothingListBottomSheet extends BottomSheetDialog
             @Override
             public void onClick(View view)
             {
-                //ClothingListBottomSheet.this.navController.navigate(R.id.);
+                ClothingListBottomSheet.this.navController.navigate(R.id.action_modelFragment_to_cropPhotoFragment);
                 dismiss();
             }
         });

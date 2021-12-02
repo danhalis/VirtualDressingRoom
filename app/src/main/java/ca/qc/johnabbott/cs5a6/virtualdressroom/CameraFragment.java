@@ -129,7 +129,7 @@ public class CameraFragment extends Fragment {
         binding.NextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                mainActivity.getNavController().navigate(R.id.action_cameraFragment_to_cropPhotoFragment);
             }
         });
 

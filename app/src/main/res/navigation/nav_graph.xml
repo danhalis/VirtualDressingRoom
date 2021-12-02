@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/cropPhotoFragment">
+    app:startDestination="@id/modelFragment">
 
     <fragment
         android:id="@+id/modelFragment"
@@ -13,6 +13,9 @@
         <action
             android:id="@+id/action_modelFragment_to_selectPhotoOptionsFragment"
             app:destination="@id/selectPhotoOptionsFragment" />
+        <action
+            android:id="@+id/action_modelFragment_to_cropPhotoFragment"
+            app:destination="@id/cropPhotoFragment" />
     </fragment>
     <fragment
         android:id="@+id/selectPhotoOptionsFragment"
@@ -27,5 +30,14 @@
         android:id="@+id/cameraFragment"
         android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.CameraFragment"
         android:label="fragment_camera"
-        tools:layout="@layout/fragment_camera" />
+        tools:layout="@layout/fragment_camera" >
+        <action
+            android:id="@+id/action_cameraFragment_to_cropPhotoFragment"
+            app:destination="@id/cropPhotoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cropPhotoFragment"
+        android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.CropPhotoFragment"
+        android:label="fragment_crop_photo"
+        tools:layout="@layout/fragment_crop_photo" />
 </navigation>
