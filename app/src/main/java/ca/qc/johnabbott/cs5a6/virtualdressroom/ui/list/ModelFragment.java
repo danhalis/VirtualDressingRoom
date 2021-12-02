@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
@@ -13,6 +15,8 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.databinding.FragmentModelListBinding;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingItem;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingType;
@@ -62,30 +66,42 @@ public class ModelFragment extends Fragment
 
         Context context = getContext();
 
+        binding.headButtonImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity)getActivity()).getNavController().navigate(R.id.action_modelFragment_to_selectPhotoOptionsFragment);
+            }
+        });
+
         binding.topsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         binding.bottomsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 
         List<ClothingItem> tempItems = new ArrayList<>();
 
-        tempItems.add(new ClothingItem(0, ClothingType.TOP));
-        tempItems.add(new ClothingItem(1, ClothingType.TOP));
-        tempItems.add(new ClothingItem(2, ClothingType.TOP));
-        tempItems.add(new ClothingItem(3, ClothingType.TOP));
-        tempItems.add(new ClothingItem(4, ClothingType.TOP));
-        tempItems.add(new ClothingItem(5, ClothingType.TOP));
-        tempItems.add(new ClothingItem(6, ClothingType.TOP));
+        byte[] top = new byte[1];
+
+        tempItems.add(new ClothingItem(0, ClothingType.TOP, top));
+        tempItems.add(new ClothingItem(1, ClothingType.TOP, top));
+        tempItems.add(new ClothingItem(2, ClothingType.TOP, top));
+        tempItems.add(new ClothingItem(3, ClothingType.TOP, top));
+        tempItems.add(new ClothingItem(4, ClothingType.TOP, top));
+        tempItems.add(new ClothingItem(5, ClothingType.TOP, top));
+        tempItems.add(new ClothingItem(6, ClothingType.TOP, top));
 
         binding.topsRecyclerView.setAdapter(new ClothingRecyclerViewAdapter(tempItems, this, ClothingType.TOP));
 
         List<ClothingItem> tempItems2 = new ArrayList<>();
 
-        tempItems2.add(new ClothingItem(0, ClothingType.BOTTOM));
-        tempItems2.add(new ClothingItem(1, ClothingType.BOTTOM));
-        tempItems2.add(new ClothingItem(2, ClothingType.BOTTOM));
-        tempItems2.add(new ClothingItem(3, ClothingType.BOTTOM));
-        tempItems2.add(new ClothingItem(4, ClothingType.BOTTOM));
-        tempItems2.add(new ClothingItem(5, ClothingType.BOTTOM));
-        tempItems2.add(new ClothingItem(6, ClothingType.BOTTOM));
+        byte[] bottom = new byte[1];
+        bottom[0] = 1;
+
+        tempItems2.add(new ClothingItem(0, ClothingType.BOTTOM, bottom));
+        tempItems2.add(new ClothingItem(1, ClothingType.BOTTOM, bottom));
+        tempItems2.add(new ClothingItem(2, ClothingType.BOTTOM, bottom));
+        tempItems2.add(new ClothingItem(3, ClothingType.BOTTOM, bottom));
+        tempItems2.add(new ClothingItem(4, ClothingType.BOTTOM, bottom));
+        tempItems2.add(new ClothingItem(5, ClothingType.BOTTOM, bottom));
+        tempItems2.add(new ClothingItem(6, ClothingType.BOTTOM, bottom));
 
         binding.bottomsRecyclerView.setAdapter(new ClothingRecyclerViewAdapter(tempItems2, this, ClothingType.BOTTOM));
 
