@@ -6,23 +6,17 @@ public class ClothingItem
 {
     private ClothingType type;
     private ClothingStatus status;
-    private Image image;
+    private byte[] image;
     private Long id;
 
 
-    public ClothingItem(int id, ClothingType type)
+    public ClothingItem(int id, ClothingType type, byte[] image)
     {
         this.setId((long) id);
         this.setType(type);
         this.setStatus(ClothingStatus.AVAILABLE);
-        //this.setImage(image);
+        this.setImage(image);
     }
-
-
-
-
-
-
 
     public Long getId()
     {
@@ -34,14 +28,14 @@ public class ClothingItem
         this.id = id;
     }
 
-    public Image getImage()
-    {
-        return this.image;
-    }
-
-    public void setImage(Image image)
+    public void setImage(byte[] image)
     {
         this.image = image;
+    }
+
+    public byte[] getImage()
+    {
+        return this.image;
     }
 
     public ClothingStatus getStatus()

@@ -78,25 +78,30 @@ public class ModelFragment extends Fragment
 
         List<ClothingItem> tempItems = new ArrayList<>();
 
-        tempItems.add(new ClothingItem(0, ClothingType.TOP));
-        tempItems.add(new ClothingItem(1, ClothingType.TOP));
-        tempItems.add(new ClothingItem(2, ClothingType.TOP));
-        tempItems.add(new ClothingItem(3, ClothingType.TOP));
-        tempItems.add(new ClothingItem(4, ClothingType.TOP));
-        tempItems.add(new ClothingItem(5, ClothingType.TOP));
-        tempItems.add(new ClothingItem(6, ClothingType.TOP));
+        byte[] top = new byte[1];
+
+        tempItems.add(new ClothingItem(0, ClothingType.TOP, top));
+        tempItems.add(new ClothingItem(1, ClothingType.TOP, top));
+        tempItems.add(new ClothingItem(2, ClothingType.TOP, top));
+        tempItems.add(new ClothingItem(3, ClothingType.TOP, top));
+        tempItems.add(new ClothingItem(4, ClothingType.TOP, top));
+        tempItems.add(new ClothingItem(5, ClothingType.TOP, top));
+        tempItems.add(new ClothingItem(6, ClothingType.TOP, top));
 
         binding.topsRecyclerView.setAdapter(new ClothingRecyclerViewAdapter(tempItems, this, ClothingType.TOP));
 
         List<ClothingItem> tempItems2 = new ArrayList<>();
 
-        tempItems2.add(new ClothingItem(0, ClothingType.BOTTOM));
-        tempItems2.add(new ClothingItem(1, ClothingType.BOTTOM));
-        tempItems2.add(new ClothingItem(2, ClothingType.BOTTOM));
-        tempItems2.add(new ClothingItem(3, ClothingType.BOTTOM));
-        tempItems2.add(new ClothingItem(4, ClothingType.BOTTOM));
-        tempItems2.add(new ClothingItem(5, ClothingType.BOTTOM));
-        tempItems2.add(new ClothingItem(6, ClothingType.BOTTOM));
+        byte[] bottom = new byte[1];
+        bottom[0] = 1;
+
+        tempItems2.add(new ClothingItem(0, ClothingType.BOTTOM, bottom));
+        tempItems2.add(new ClothingItem(1, ClothingType.BOTTOM, bottom));
+        tempItems2.add(new ClothingItem(2, ClothingType.BOTTOM, bottom));
+        tempItems2.add(new ClothingItem(3, ClothingType.BOTTOM, bottom));
+        tempItems2.add(new ClothingItem(4, ClothingType.BOTTOM, bottom));
+        tempItems2.add(new ClothingItem(5, ClothingType.BOTTOM, bottom));
+        tempItems2.add(new ClothingItem(6, ClothingType.BOTTOM, bottom));
 
         binding.bottomsRecyclerView.setAdapter(new ClothingRecyclerViewAdapter(tempItems2, this, ClothingType.BOTTOM));
 
