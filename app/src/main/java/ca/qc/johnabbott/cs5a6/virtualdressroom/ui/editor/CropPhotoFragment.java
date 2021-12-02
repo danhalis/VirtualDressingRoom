@@ -7,15 +7,18 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.views.CropView;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link EditPhotoFragment#newInstance} factory method to
+ * Use the {@link CropPhotoFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class EditPhotoFragment extends Fragment {
+public class CropPhotoFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -26,7 +29,11 @@ public class EditPhotoFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public EditPhotoFragment() {
+    private MainActivity activity;
+    private CropView cropView;
+    private ImageView resultImageView;
+
+    public CropPhotoFragment() {
         // Required empty public constructor
     }
 
@@ -36,11 +43,10 @@ public class EditPhotoFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment EditPhotoFragment.
+     * @return A new instance of fragment CropPhotoFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static EditPhotoFragment newInstance(String param1, String param2) {
-        EditPhotoFragment fragment = new EditPhotoFragment();
+    public static CropPhotoFragment newInstance(String param1, String param2) {
+        CropPhotoFragment fragment = new CropPhotoFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -61,6 +67,18 @@ public class EditPhotoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_edit_photo, container, false);
+        View view = inflater.inflate(R.layout.fragment_crop_photo, container, false);
+
+        MainActivity activity = (MainActivity) getActivity();
+        assert activity != null;
+        activity.setCropPhotoFragment(this);
+
+        resultImageView = view.findViewById(R.id.imageView);
+
+        return view;
+    }
+
+    public ImageView getResultImageView() {
+        return resultImageView;
     }
 }

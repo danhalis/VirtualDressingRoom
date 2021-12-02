@@ -3,25 +3,29 @@ package ca.qc.johnabbott.cs5a6.virtualdressroom.ui.views;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.appcompat.content.res.AppCompatResources;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
-import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.CropPhotoActivity;
-import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.EditPhotoActivity;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.helper.BitmapHelper;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.models.Point;
 
@@ -43,8 +47,13 @@ public class CropView extends View implements View.OnTouchListener {
 
     private boolean didRegisterFirstPoint = false;
 
-    private final Bitmap bitmap;
+    private Bitmap bitmap;
+    private int scaledBitmapWidth;
+    private int scaledBitmapHeight;
     private final Context mContext;
+//    private final CropPhotoFragment fragment;
+
+    private ImageView compositeImageView;
 
     public CropView(Context c) {
         super(c);
@@ -53,7 +62,36 @@ public class CropView extends View implements View.OnTouchListener {
         setFocusable(true);
         setFocusableInTouchMode(true);
 
-        Drawable drawable = AppCompatResources.getDrawable(mContext, R.drawable.ic_android_black_24dp);
+        Drawable drawable = AppCompatResources.getDrawable(mContext, R.drawable.shirt);
+        bitmap = BitmapHelper.convertToBitmap(drawable);
+
+        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setPathEffect(
+            new DashPathEffect(
+                new float[] { DASH_LENGTH, DASH_GAP },
+                0
+            )
+        );
+        paint.setStrokeWidth(STROKE_WIDTH);
+        paint.setColor(Color.WHITE);
+
+        path = new Path();
+
+        this.setOnTouchListener(this);
+        points = new ArrayList<>();
+
+        didRegisterFirstPoint = false;
+    }
+
+    public CropView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+
+        mContext = context;
+        setFocusable(true);
+        setFocusableInTouchMode(true);
+
+        Drawable drawable = AppCompatResources.getDrawable(mContext, R.drawable.shirt);
         bitmap = BitmapHelper.convertToBitmap(drawable);
 
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -165,7 +203,15 @@ public class CropView extends View implements View.OnTouchListener {
 
     @Override
     public void onDraw(Canvas canvas) {
-        canvas.drawBitmap(bitmap, 0, 0, null);
+
+        int bitMapWidth = bitmap.getWidth();
+        int bitMapHeight = bitmap.getHeight();
+        float ratio = (float) bitMapWidth / bitMapHeight;
+        float height = getWidth() / ratio;
+        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, getWidth(), (int) height, false);
+        scaledBitmapWidth = scaledBitmap.getWidth();
+        scaledBitmapHeight = scaledBitmap.getHeight();
+        canvas.drawBitmap(scaledBitmap, 0, (float) (getHeight() - scaledBitmap.getHeight()) / 2, null);
 
         boolean first = true;
 
@@ -212,25 +258,65 @@ public class CropView extends View implements View.OnTouchListener {
         }
     }
 
+    private void crop(boolean keepInner) {
+
+        DisplayMetrics dm = new DisplayMetrics();
+
+        MainActivity activity = (MainActivity) mContext;
+        try {
+            activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        }
+        catch (Exception ex) {
+        }
+
+        int screenWidth = dm.widthPixels;
+        int screenHeight = dm.heightPixels;
+
+        compositeImageView = activity.getCropPhotoFragment().getResultImageView();
+
+        Drawable drawable = AppCompatResources.getDrawable(mContext, R.drawable.shirt);
+        Bitmap bitmap = BitmapHelper.convertToBitmap(drawable);
+        bitmap = Bitmap.createScaledBitmap(bitmap, scaledBitmapWidth, scaledBitmapHeight, false);
+        Bitmap resultingImage = Bitmap.createBitmap(scaledBitmapWidth,
+                scaledBitmapHeight,
+                bitmap.getConfig());
+
+        Canvas canvas = new Canvas(resultingImage);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+
+        Path path = new Path();
+        List<Point> points = CropView.getPoints();
+        for (int i = 0; i < points.size(); i++) {
+            path.lineTo(points.get(i).x, points.get(i).y);
+        }
+        canvas.drawPath(path, paint);
+
+        if (keepInner) {
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+
+        } else {
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+        }
+        // crop inside or outside
+        canvas.drawBitmap(bitmap, 0, -scaledBitmapHeight / 2, paint);
+
+        compositeImageView.setImageBitmap(resultingImage);
+
+        this.setVisibility(GONE);
+    }
+
     private void showCropDialog() {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent;
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
-
-                        intent = new Intent(mContext, CropPhotoActivity.class);
-                        intent.putExtra("crop", true);
-                        mContext.startActivity(intent);
+                        crop(true);
                         break;
 
                     case DialogInterface.BUTTON_NEGATIVE:
-
-                        intent = new Intent(mContext, CropPhotoActivity.class);
-                        intent.putExtra("crop", false);
-                        mContext.startActivity(intent);
-
+                        crop(false);
                         didRegisterFirstPoint = false;
 
                         break;
