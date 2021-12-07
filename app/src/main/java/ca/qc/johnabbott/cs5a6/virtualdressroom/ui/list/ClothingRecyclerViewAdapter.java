@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.databinding.ListItemClothingBinding;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingItem;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingType;
@@ -93,6 +94,20 @@ public class ClothingRecyclerViewAdapter extends RecyclerView.Adapter<ClothingRe
         public void bind(ClothingItem item)
         {
             clothingItem = item;
+
+            // Temporary
+
+            if (clothingItem.getImage()[0] == 0)
+            {
+                binding.imageView.setBackgroundResource(R.drawable.black_shirt);
+            }
+
+            if (clothingItem.getImage()[0] == 1)
+            {
+                binding.imageView.setBackgroundResource(R.drawable.khaki);
+            }
+
+
         }
 
     }
