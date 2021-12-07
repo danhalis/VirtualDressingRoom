@@ -13,12 +13,6 @@
         android:requestLegacyExternalStorage="true"
         android:theme="@style/Theme.VirtualDressRoom">
         <activity
-            android:name=".ui.editor.CropPhotoActivity"
-            android:exported="true" />
-        <activity
-            android:name=".ui.editor.EditPhotoActivity"
-            android:exported="true" />
-        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>

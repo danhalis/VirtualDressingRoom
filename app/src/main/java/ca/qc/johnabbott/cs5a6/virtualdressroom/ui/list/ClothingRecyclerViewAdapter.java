@@ -1,10 +1,14 @@
 package ca.qc.johnabbott.cs5a6.virtualdressroom.ui.list;
 
+import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
+import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.databinding.ListItemClothingBinding;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingItem;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingType;
@@ -24,6 +28,19 @@ public class ClothingRecyclerViewAdapter extends RecyclerView.Adapter<ClothingRe
         clothingType = type;
     }
 
+    public void RemoveClothingItemFromList(Long id)
+    {
+        for (int i = 0; i < clothingItems.size(); i++)
+        {
+            if (clothingItems.get(i).getId().equals(id))
+            {
+                clothingItems.remove(i);
+                break;
+            }
+        }
+    }
+
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
@@ -35,10 +52,6 @@ public class ClothingRecyclerViewAdapter extends RecyclerView.Adapter<ClothingRe
     public void onBindViewHolder(final ViewHolder holder, int position)
     {
         holder.bind(clothingItems.get(position));
-
-        //holder.mItem = mValues.get(position);
-        //holder.mIdView.setText(mValues.get(position).id);
-        //holder.mContentView.setText(mValues.get(position).content);
     }
 
     @Override
@@ -56,11 +69,45 @@ public class ClothingRecyclerViewAdapter extends RecyclerView.Adapter<ClothingRe
         {
             super(binding.getRoot());
             this.binding = binding;
+
+
+            this.binding.constraintLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    NavController navController = ((MainActivity)modelFragment.getActivity()).getNavController();
+                    ClothingListBottomSheet clothingListBottomSheet = new ClothingListBottomSheet(modelFragment.getContext(), clothingItem, ClothingRecyclerViewAdapter.this, navController);
+                    clothingListBottomSheet.show();
+
+                    return false;
+                }
+            });
+
+            this.binding.constraintLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Add To Model
+                }
+            });
+
         }
 
         public void bind(ClothingItem item)
         {
             clothingItem = item;
+
+            // Temporary
+
+            if (clothingItem.getImage()[0] == 0)
+            {
+                binding.imageView.setBackgroundResource(R.drawable.black_shirt);
+            }
+
+            if (clothingItem.getImage()[0] == 1)
+            {
+                binding.imageView.setBackgroundResource(R.drawable.khaki);
+            }
+
+
         }
 
     }
