@@ -12,8 +12,6 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.RectF;
-import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -28,6 +26,7 @@ import java.util.List;
 
 import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.CropPhotoFragment;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.helper.BitmapHelper;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.models.Point;
 
@@ -38,6 +37,15 @@ public class CropView extends View implements View.OnTouchListener {
     private static final int DASH_LENGTH = 10;
     private static final int DASH_GAP = 5;
 
+    private final Context mContext;
+    private CropPhotoFragment fragment;
+
+    private Bitmap bitmap;
+    private boolean requiresScalingBitmap;
+    private int scaledBitmapWidth;
+    private int scaledBitmapHeight;
+    private float yOffset;
+
     private final Paint paint;
     private final Path path;
     private static List<Point> points;
@@ -47,44 +55,7 @@ public class CropView extends View implements View.OnTouchListener {
     private Point mFirstPoint = null;
     private Point mLastPoint = null;
 
-    private boolean didRegisterFirstPoint = false;
-
-    private Bitmap bitmap;
-    private int scaledBitmapWidth;
-    private int scaledBitmapHeight;
-    private final Context mContext;
-//    private final CropPhotoFragment fragment;
-
-    private ImageView compositeImageView;
-
-    public CropView(Context c) {
-        super(c);
-
-        mContext = c;
-        setFocusable(true);
-        setFocusableInTouchMode(true);
-
-        Drawable drawable = AppCompatResources.getDrawable(mContext, R.drawable.shirt);
-        bitmap = BitmapHelper.convertToBitmap(drawable);
-
-        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setPathEffect(
-            new DashPathEffect(
-                new float[] { DASH_LENGTH, DASH_GAP },
-                0
-            )
-        );
-        paint.setStrokeWidth(STROKE_WIDTH);
-        paint.setColor(Color.WHITE);
-
-        path = new Path();
-
-        this.setOnTouchListener(this);
-        points = new ArrayList<>();
-
-        didRegisterFirstPoint = false;
-    }
+    private boolean didRegisterFirstPoint;
 
     public CropView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -93,9 +64,11 @@ public class CropView extends View implements View.OnTouchListener {
         setFocusable(true);
         setFocusableInTouchMode(true);
 
-        Drawable drawable = AppCompatResources.getDrawable(mContext, R.drawable.ic_android_black_24dp);
+        // Get placeholder image
+        Drawable drawable = AppCompatResources.getDrawable(mContext, R.drawable.shirt);
         bitmap = BitmapHelper.convertToBitmap(drawable);
 
+        // init paint
         paint = new Paint(Paint.ANTI_ALIAS_FLAG);
         paint.setStyle(Paint.Style.STROKE);
         paint.setPathEffect(
@@ -107,39 +80,43 @@ public class CropView extends View implements View.OnTouchListener {
         paint.setStrokeWidth(STROKE_WIDTH);
         paint.setColor(Color.WHITE);
 
+        // init path
         path = new Path();
 
-        this.setOnTouchListener(this);
+        // init points
         points = new ArrayList<>();
 
+        setOnTouchListener(this);
+
         didRegisterFirstPoint = false;
+    }
+
+    public void setFragment(CropPhotoFragment fragment) {
+        this.fragment = fragment;
     }
 
     public static List<Point> getPoints() {
         return points;
     }
 
-    //    public CropView(Context context, AttributeSet attrs) {
-//        super(context, attrs);
-//
-//        mContext = context;
-//        setFocusable(true);
-//        setFocusableInTouchMode(true);
-//
-//        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-//        paint.setStyle(Paint.Style.STROKE);
-//        paint.setStrokeWidth(2);
-//        paint.setColor(Color.WHITE);
-//
-//        this.setOnTouchListener(this);
-//        points = new ArrayList<Point>();
-//        bfirstpoint = false;
-//
-//    }
-
     @Override
-    public boolean performClick() {
-        return super.performClick();
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+
+        if (!requiresScalingBitmap) {
+            // scale image to screen width
+            int bitMapWidth = bitmap.getWidth();
+            int bitMapHeight = bitmap.getHeight();
+            float ratio = (float) bitMapWidth / bitMapHeight;
+            float scaledHeight = getWidth() / ratio;
+
+            bitmap = Bitmap.createScaledBitmap(bitmap, getWidth(), (int) scaledHeight, false);
+            scaledBitmapWidth = bitmap.getWidth();
+            scaledBitmapHeight = bitmap.getHeight();
+            yOffset = (float) (getHeight() - scaledBitmapHeight) / 2;
+
+            requiresScalingBitmap = true;
+        }
     }
 
     @Override
@@ -206,14 +183,7 @@ public class CropView extends View implements View.OnTouchListener {
     @Override
     public void onDraw(Canvas canvas) {
 
-        int bitMapWidth = bitmap.getWidth();
-        int bitMapHeight = bitmap.getHeight();
-        float ratio = (float) bitMapWidth / bitMapHeight;
-        float height = getWidth() / ratio;
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, getWidth(), (int) height, false);
-        scaledBitmapWidth = scaledBitmap.getWidth();
-        scaledBitmapHeight = scaledBitmap.getHeight();
-        canvas.drawBitmap(scaledBitmap, 0, (float) (getHeight() - scaledBitmap.getHeight()) / 2, null);
+        canvas.drawBitmap(bitmap, 0, yOffset, null);
 
         boolean first = true;
 
@@ -262,72 +232,12 @@ public class CropView extends View implements View.OnTouchListener {
 
     private void crop(boolean keepInner) {
 
-//        Bitmap fullScreenBitmap =
-//                Bitmap.createBitmap(this.getWidth(), this.getHeight(), bitmap.getConfig());
-//
-//        Canvas canvas = new Canvas(fullScreenBitmap);
-//
-//        Path path = new Path();
-//        List<Point> points = CropView.getPoints();
-//        for (int i = 0; i < points.size(); i++) {
-//            path.lineTo(points.get(i).x, points.get(i).y);
-//        }
-//
-//        // Cut out the selected portion of the image...
-//        Paint paint = new Paint();
-//        canvas.drawPath(path, paint);
-//        if (keepInner)
-//            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-//        else
-//            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
-//        canvas.drawBitmap(bitmap, 0, 0, paint);
-//
-//        // Frame the cut out portion...
-//        paint.setColor(Color.WHITE);
-//        paint.setStyle(Paint.Style.STROKE);
-//        paint.setStrokeWidth(10f);
-//        canvas.drawPath(path, paint);
-//
-//        // Create a bitmap with just the cropped area.
-//        Region region = new Region();
-//        Region clip = new Region(0, 0, fullScreenBitmap.getWidth(), fullScreenBitmap.getHeight());
-//        region.setPath(path, clip);
-//        Rect bounds = region.getBounds();
-//        Bitmap croppedBitmap =
-//                Bitmap.createBitmap(fullScreenBitmap, fullScreenBitmap.getWidth()/2, fullScreenBitmap.getHeight()/2,
-//                        bounds.width(), bounds.height());
-
-
-
-        DisplayMetrics dm = new DisplayMetrics();
-
-        MainActivity activity = (MainActivity) mContext;
-        try {
-            activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
-        }
-        catch (Exception ex) {
-        }
-
-        int screenWidth = dm.widthPixels;
-        int screenHeight = dm.heightPixels;
-
-        compositeImageView = activity.getCropPhotoFragment().getResultImageView();
-
-        Drawable drawable = AppCompatResources.getDrawable(mContext, R.drawable.ic_android_black_24dp);
-        Bitmap bitmap = BitmapHelper.convertToBitmap(drawable);
-        bitmap = Bitmap.createScaledBitmap(bitmap, scaledBitmapWidth, scaledBitmapHeight, false);
-        Bitmap resultingImage = Bitmap.createBitmap(
-                screenWidth,
-                screenHeight,
+        Bitmap resultImage = Bitmap.createBitmap(
+                getWidth(),
+                getHeight(),
                 bitmap.getConfig());
-//        bitmap = Bitmap.createScaledBitmap(bitmap, scaledBitmapWidth, scaledBitmapHeight, false);
 
-//        Bitmap resultingImage = Bitmap.createBitmap(
-//                bitmap.getWidth(),
-//                bitmap.getHeight(),
-//                bitmap.getConfig());
-
-        Canvas canvas = new Canvas(resultingImage);
+        Canvas canvas = new Canvas(resultImage);
 
         Paint paint = new Paint();
         paint.setAntiAlias(true);
@@ -335,7 +245,7 @@ public class CropView extends View implements View.OnTouchListener {
         Path path = new Path();
         List<Point> points = CropView.getPoints();
         for (int i = 0; i < points.size(); i++) {
-            path.lineTo(points.get(i).x, points.get(i).y - 200);
+            path.lineTo(points.get(i).x, points.get(i).y - yOffset);
         }
 
         canvas.drawPath(path, paint);
@@ -349,23 +259,15 @@ public class CropView extends View implements View.OnTouchListener {
         }
 
         Rect rect = new Rect(0, 0, scaledBitmapWidth, scaledBitmapHeight);
-//        canvas.drawBitmap(bitmap, 0, 0, paint);
+
         canvas.drawBitmap(bitmap, null, rect, paint);
-//        canvas.drawBitmap(bitmap, 0, (float) (getHeight() - resultingImage.getHeight()) / 2, paint);
 
-//        canvas.drawBitmap(resultingImage, 0, (float) (getHeight() - resultingImage.getHeight()) / 2, paint);
+        resultImage.setWidth(scaledBitmapWidth);
+        resultImage.setHeight(scaledBitmapHeight);
 
-
-//        resultingImage = Bitmap.createScaledBitmap(bitmap, scaledBitmapWidth, scaledBitmapHeight, false);
-        resultingImage.setWidth(scaledBitmapWidth);
-        resultingImage.setHeight(scaledBitmapHeight);
-        compositeImageView.setImageBitmap(resultingImage);
-//        compositeImageView.setMaxWidth(scaledBitmapWidth);
-//        compositeImageView.setMaxHeight(scaledBitmapHeight);
+        fragment.setResultImageBitmap(resultImage);
 
         this.setVisibility(GONE);
-//        compositeImageView.setImageBitmap(croppedBitmap);
-
     }
 
     private void showCropDialog() {
