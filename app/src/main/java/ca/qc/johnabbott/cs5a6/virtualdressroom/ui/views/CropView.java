@@ -63,7 +63,7 @@ public class CropView extends View implements View.OnTouchListener {
         setFocusableInTouchMode(true);
 
         // Get placeholder image
-        Drawable drawable = AppCompatResources.getDrawable(this.context, R.drawable.shirt);
+        Drawable drawable = AppCompatResources.getDrawable(this.context, R.drawable.sample_photo_to_crop);
         bitmap = BitmapHelper.convertToBitmap(drawable);
 
         // init lasso paint
