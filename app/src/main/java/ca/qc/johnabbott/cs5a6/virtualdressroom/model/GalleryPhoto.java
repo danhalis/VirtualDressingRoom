@@ -2,17 +2,12 @@ package ca.qc.johnabbott.cs5a6.virtualdressroom.model;
 
 import android.content.Context;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.Identifiable;
-
-
-
-
-
 public class GalleryPhoto implements Identifiable<Long> {
     private String webformatURL;
     private long id;
 
 
-    public GalleryPhoto(String webformatURL, long id, String largeImageURL) {
+    public GalleryPhoto(String webformatURL, long id) {
         this.webformatURL = webformatURL;
         this.id = id;
 
@@ -33,11 +28,7 @@ public class GalleryPhoto implements Identifiable<Long> {
         this.webformatURL = webformatURL;
         return this;
     }
-
-
-
-
-    public Long getId() {
+  public Long getId() {
         return id;
     }
 
