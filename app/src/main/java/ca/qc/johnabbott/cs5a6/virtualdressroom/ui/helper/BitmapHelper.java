@@ -8,7 +8,7 @@ import android.graphics.drawable.Drawable;
 public class BitmapHelper {
     // Source: https://stackoverflow.com/a/10600736
     public static Bitmap convertToBitmap(Drawable drawable) {
-        Bitmap bitmap = null;
+        Bitmap bitmap;
 
         if (drawable instanceof BitmapDrawable) {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
