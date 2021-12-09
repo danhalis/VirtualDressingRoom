@@ -51,7 +51,7 @@ public class PhotoFragment extends Fragment {
         binding.button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            //    mainActivity.getNavController().navigate(R.id.action_photoFragment_to_cropPhotoFragment);
+            mainActivity.getNavController().navigate(R.id.action_photoFragment_to_cropPhotoFragment);
 
             }
         });
