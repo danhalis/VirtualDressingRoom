@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/cropPhotoFragment">
+    app:startDestination="@id/selectPhotoOptionsFragment">
 
     <fragment
         android:id="@+id/modelFragment"
@@ -25,6 +25,9 @@
         <action
             android:id="@+id/action_selectPhotoOptionsFragment_to_cameraFragment"
             app:destination="@id/cameraFragment" />
+        <action
+            android:id="@+id/action_selectPhotoOptionsFragment_to_selectPhotoFragment"
+            app:destination="@id/selectPhotoFragment" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
@@ -40,4 +43,25 @@
         android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.CropPhotoFragment"
         android:label="fragment_crop_photo"
         tools:layout="@layout/fragment_crop_photo" />
+    <fragment
+        android:id="@+id/selectPhotoFragment"
+        android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.SelectPhotoFragment"
+        android:label="fragment_select_photo_list"
+        tools:layout="@layout/fragment_select_photo_list" >
+        <action
+            android:id="@+id/action_selectPhotoFragment_to_photoFragment"
+            app:destination="@id/photoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/photoFragment"
+        android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.PhotoFragment"
+        android:label="fragment_photo"
+        tools:layout="@layout/fragment_photo" >
+        <action
+            android:id="@+id/action_photoFragment_to_selectPhotoFragment"
+            app:destination="@id/selectPhotoFragment" />
+        <action
+            android:id="@+id/action_photoFragment_to_cropPhotoFragment"
+            app:destination="@id/cropPhotoFragment" />
+    </fragment>
 </navigation>

@@ -76,39 +76,3 @@ public class SelectPhotoFragment extends Fragment {
         binding = null;
     }
 }
-  /* public  void fetchData(){
-        StringRequest stringRequest= new StringRequest(Request.Method.GET, getUrl(), new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-images=Gson().fromJson(response, Pixabay.Class);
-                List<Person> persons =gson.fromJson(json, new TypeToken<List<GalleryPhoto>>() {}.getType());
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-    }
-    private String getUrl() {
-        return "https://pixabay.com/api/?key=24637787-3891e90ceb2f5d5081dd40724&q=clothes+man+woman&image_type=photo&pretty=true";
-
-    }
-    private void initDatafoot() throws FileNotFoundException {
-        folder = new File(mainActivity.getFilesDir().getAbsolutePath().toString());
-        GalleryPhoto galleryPhoto=new GalleryPhoto();
-        allFiles = folder.list();
-
-        if (allFiles.length == 0 ) {
-            Toast.makeText(mainActivity, "no photos", Toast.LENGTH_LONG).show();
-        } else {
-
-            for (int i = 0; i < allFiles.length; i++) {
-               Bitmap bitmap = BitmapFactory.decodeFile(folder+allFiles[i]);
-               image.add(bitmap);
-
-            }
-        }
-    }
-}
-*/
