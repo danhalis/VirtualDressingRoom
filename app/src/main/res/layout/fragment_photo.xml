@@ -22,7 +22,7 @@
         tools:src="@tools:sample/avatars" />
 
     <Button
-        android:id="@+id/CancleBtn"
+        android:id="@+id/Cancle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="72dp"
@@ -39,8 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="56dp"
         android:text="Next"
-        app:layout_constraintBottom_toBottomOf="@+id/CancleBtn"
+        app:layout_constraintBottom_toBottomOf="@+id/Cancle"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/CancleBtn" />
+        app:layout_constraintTop_toTopOf="@+id/Cancle" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
