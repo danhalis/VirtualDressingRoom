@@ -42,7 +42,7 @@ public class PhotoFragment extends Fragment {
         imageView= binding.imageView;
         String url = galleryPhoto.getWebformatURL();
         Glide.with(mainActivity).load(url).into(imageView);
-        binding.CancleB.setOnClickListener(new View.OnClickListener() {
+        binding.CancleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mainActivity.getNavController().navigate(R.id.action_photoFragment_to_selectPhotoFragment);
