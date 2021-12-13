@@ -11,21 +11,19 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.DisplayMetrics;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 
 import androidx.appcompat.content.res.AppCompatResources;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.CropPhotoFragment;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.helper.BitmapHelper;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.models.Point;
 
@@ -36,108 +34,87 @@ public class CropView extends View implements View.OnTouchListener {
     private static final int DASH_LENGTH = 10;
     private static final int DASH_GAP = 5;
 
-    private final Paint paint;
-    private final Path path;
-    private static List<Point> points;
+    private final Context context;
+    private CropPhotoFragment fragment;
+
+    private Bitmap bitmap;
+    private boolean requiresScalingBitmap;
+    private int scaledBitmapWidth;
+    private int scaledBitmapHeight;
+    private float yOffset;
+
+    private final Paint lassoPaint;
+    private final Path lassoPath;
+    private final List<Point> lassoPoints;
 
     private boolean flgPathDraw = true;
 
-    private Point mFirstPoint = null;
-    private Point mLastPoint = null;
+    private Point firstPoint;
+    private Point lastPoint;
 
-    private boolean didRegisterFirstPoint = false;
-
-    private Bitmap bitmap;
-    private int scaledBitmapWidth;
-    private int scaledBitmapHeight;
-    private final Context mContext;
-//    private final CropPhotoFragment fragment;
-
-    private ImageView compositeImageView;
-
-    public CropView(Context c) {
-        super(c);
-
-        mContext = c;
-        setFocusable(true);
-        setFocusableInTouchMode(true);
-
-        Drawable drawable = AppCompatResources.getDrawable(mContext, R.drawable.shirt);
-        bitmap = BitmapHelper.convertToBitmap(drawable);
-
-        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setPathEffect(
-            new DashPathEffect(
-                new float[] { DASH_LENGTH, DASH_GAP },
-                0
-            )
-        );
-        paint.setStrokeWidth(STROKE_WIDTH);
-        paint.setColor(Color.WHITE);
-
-        path = new Path();
-
-        this.setOnTouchListener(this);
-        points = new ArrayList<>();
-
-        didRegisterFirstPoint = false;
-    }
+    private boolean didRegisterFirstPoint;
 
     public CropView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
-        mContext = context;
+        this.context = context;
+
         setFocusable(true);
         setFocusableInTouchMode(true);
 
-        Drawable drawable = AppCompatResources.getDrawable(mContext, R.drawable.shirt);
+        // Get placeholder image
+        Drawable drawable = AppCompatResources.getDrawable(this.context, R.drawable.sample_photo_to_crop);
         bitmap = BitmapHelper.convertToBitmap(drawable);
 
-        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setPathEffect(
+        // init lasso paint
+        lassoPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        lassoPaint.setStyle(Paint.Style.STROKE);
+        lassoPaint.setPathEffect(
             new DashPathEffect(
                 new float[] { DASH_LENGTH, DASH_GAP },
                 0
             )
         );
-        paint.setStrokeWidth(STROKE_WIDTH);
-        paint.setColor(Color.WHITE);
+        lassoPaint.setStrokeWidth(STROKE_WIDTH);
+        lassoPaint.setColor(Color.WHITE);
 
-        path = new Path();
+        // init lasso path
+        lassoPath = new Path();
 
-        this.setOnTouchListener(this);
-        points = new ArrayList<>();
+        // init lasso points
+        lassoPoints = new ArrayList<>();
+
+        setOnTouchListener(this);
 
         didRegisterFirstPoint = false;
     }
 
-    public static List<Point> getPoints() {
-        return points;
+    public void setFragment(CropPhotoFragment fragment) {
+        this.fragment = fragment;
     }
 
-    //    public CropView(Context context, AttributeSet attrs) {
-//        super(context, attrs);
-//
-//        mContext = context;
-//        setFocusable(true);
-//        setFocusableInTouchMode(true);
-//
-//        paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-//        paint.setStyle(Paint.Style.STROKE);
-//        paint.setStrokeWidth(2);
-//        paint.setColor(Color.WHITE);
-//
-//        this.setOnTouchListener(this);
-//        points = new ArrayList<Point>();
-//        bfirstpoint = false;
-//
-//    }
+    public List<Point> getLassoPoints() {
+        return lassoPoints;
+    }
 
     @Override
-    public boolean performClick() {
-        return super.performClick();
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+
+        if (!requiresScalingBitmap) {
+            // scale image to screen width
+            int bitMapWidth = bitmap.getWidth();
+            int bitMapHeight = bitmap.getHeight();
+            float ratio = (float) bitMapWidth / bitMapHeight;
+            float scaledHeight = getWidth() / ratio;
+
+            bitmap = Bitmap.createScaledBitmap(bitmap, getWidth(), (int) scaledHeight, false);
+            scaledBitmapWidth = bitmap.getWidth();
+            scaledBitmapHeight = bitmap.getHeight();
+            yOffset = (float) (getHeight() - scaledBitmapHeight) / 2;
+
+            requiresScalingBitmap = true;
+        }
     }
 
     @Override
@@ -155,23 +132,23 @@ public class CropView extends View implements View.OnTouchListener {
 
                 // if the current touch point meets the very first touch point
                 // meaning the lasso has been enclosed
-                if (comparePoints(mFirstPoint, point)) {
-                    points.add(mFirstPoint);
+                if (comparePoints(firstPoint, point)) {
+                    lassoPoints.add(firstPoint);
                     flgPathDraw = false;
 
                     showCropDialog();
                 }
                 // if the current touch point doesn't meet the very first point yet
                 else {
-                    points.add(point);
+                    lassoPoints.add(point);
                 }
             }
             // if this is the very first touch point
             else {
-                mFirstPoint = point;
+                firstPoint = point;
                 didRegisterFirstPoint = true;
 
-                points.add(point);
+                lassoPoints.add(point);
             }
         }
 
@@ -183,14 +160,14 @@ public class CropView extends View implements View.OnTouchListener {
         // meaning this touch point is the last one
         if (event.getAction() == MotionEvent.ACTION_UP) {
 
-            mLastPoint = point;
+            lastPoint = point;
 
             if (flgPathDraw) {
-                if (points.size() >= MIN_POINTS) {
+                if (lassoPoints.size() >= MIN_POINTS) {
                     //
-                    if (!comparePoints(mFirstPoint, mLastPoint)) {
+                    if (!comparePoints(firstPoint, lastPoint)) {
                         flgPathDraw = false;
-                        points.add(mFirstPoint);
+                        lassoPoints.add(firstPoint);
 
                         showCropDialog();
                     }
@@ -204,36 +181,29 @@ public class CropView extends View implements View.OnTouchListener {
     @Override
     public void onDraw(Canvas canvas) {
 
-        int bitMapWidth = bitmap.getWidth();
-        int bitMapHeight = bitmap.getHeight();
-        float ratio = (float) bitMapWidth / bitMapHeight;
-        float height = getWidth() / ratio;
-        Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, getWidth(), (int) height, false);
-        scaledBitmapWidth = scaledBitmap.getWidth();
-        scaledBitmapHeight = scaledBitmap.getHeight();
-        canvas.drawBitmap(scaledBitmap, 0, (float) (getHeight() - scaledBitmap.getHeight()) / 2, null);
+        canvas.drawBitmap(bitmap, 0, yOffset, null);
 
         boolean first = true;
 
-        for (int i = 0; i < points.size(); i += 2) {
-            Point point = points.get(i);
+        for (int i = 0; i < lassoPoints.size(); i += 2) {
+            Point point = lassoPoints.get(i);
 
             // if this is the first registered point
             if (first) {
                 first = false;
-                path.moveTo(point.x, point.y);
+                lassoPath.moveTo(point.x, point.y);
             }
-            else if (i < points.size() - 1) {
-                Point next = points.get(i + 1);
-                path.quadTo(point.x, point.y, next.x, next.y);
+            else if (i < lassoPoints.size() - 1) {
+                Point next = lassoPoints.get(i + 1);
+                lassoPath.quadTo(point.x, point.y, next.x, next.y);
             }
             // if this is the last registered point
             else {
-                mLastPoint = points.get(i);
-                path.lineTo(point.x, point.y);
+                lastPoint = lassoPoints.get(i);
+                lassoPath.lineTo(point.x, point.y);
             }
         }
-        canvas.drawPath(path, paint);
+        canvas.drawPath(lassoPath, lassoPaint);
     }
 
     private boolean comparePoints(Point first, Point second) {
@@ -246,7 +216,7 @@ public class CropView extends View implements View.OnTouchListener {
         if ((left_range_x < first.x && first.x < right_range_x)
                 && (left_range_y < first.y && first.y < right_range_y)) {
 
-            if (points.size() < MIN_POINTS) {
+            if (lassoPoints.size() < MIN_POINTS) {
                 return false;
             }
             else {
@@ -260,48 +230,39 @@ public class CropView extends View implements View.OnTouchListener {
 
     private void crop(boolean keepInner) {
 
-        DisplayMetrics dm = new DisplayMetrics();
-
-        MainActivity activity = (MainActivity) mContext;
-        try {
-            activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
-        }
-        catch (Exception ex) {
-        }
-
-        int screenWidth = dm.widthPixels;
-        int screenHeight = dm.heightPixels;
-
-        compositeImageView = activity.getCropPhotoFragment().getResultImageView();
-
-        Drawable drawable = AppCompatResources.getDrawable(mContext, R.drawable.shirt);
-        Bitmap bitmap = BitmapHelper.convertToBitmap(drawable);
-        bitmap = Bitmap.createScaledBitmap(bitmap, scaledBitmapWidth, scaledBitmapHeight, false);
-        Bitmap resultingImage = Bitmap.createBitmap(scaledBitmapWidth,
-                scaledBitmapHeight,
+        Bitmap resultImage = Bitmap.createBitmap(
+                getWidth(),
+                getHeight(),
                 bitmap.getConfig());
 
-        Canvas canvas = new Canvas(resultingImage);
+        Canvas canvas = new Canvas(resultImage);
+
         Paint paint = new Paint();
         paint.setAntiAlias(true);
 
         Path path = new Path();
-        List<Point> points = CropView.getPoints();
+        List<Point> points = getLassoPoints();
         for (int i = 0; i < points.size(); i++) {
-            path.lineTo(points.get(i).x, points.get(i).y);
+            path.lineTo(points.get(i).x, points.get(i).y - yOffset);
         }
+
         canvas.drawPath(path, paint);
 
+        // crop inside or outside
         if (keepInner) {
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
 
         } else {
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
         }
-        // crop inside or outside
-        canvas.drawBitmap(bitmap, 0, -scaledBitmapHeight / 2, paint);
 
-        compositeImageView.setImageBitmap(resultingImage);
+        Rect rect = new Rect(0, 0, scaledBitmapWidth, scaledBitmapHeight);
+        canvas.drawBitmap(bitmap, null, rect, paint);
+
+        resultImage.setWidth(scaledBitmapWidth);
+        resultImage.setHeight(scaledBitmapHeight);
+
+        fragment.setResultImageBitmap(resultImage);
 
         this.setVisibility(GONE);
     }
@@ -324,7 +285,7 @@ public class CropView extends View implements View.OnTouchListener {
             }
         };
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setMessage("Do you Want to save Crop or Non-crop image?")
                 .setPositiveButton("Crop", dialogClickListener)
                 .setNegativeButton("Non-crop", dialogClickListener).show()

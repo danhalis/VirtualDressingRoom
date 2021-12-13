@@ -1,5 +1,6 @@
 package ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -74,11 +75,13 @@ public class CropPhotoFragment extends Fragment {
         activity.setCropPhotoFragment(this);
 
         resultImageView = view.findViewById(R.id.imageView);
+        cropView = view.findViewById(R.id.cropView);
+        cropView.setFragment(this);
 
         return view;
     }
 
-    public ImageView getResultImageView() {
-        return resultImageView;
+    public void setResultImageBitmap(Bitmap bitmap) {
+        resultImageView.setImageBitmap(bitmap);
     }
 }
