@@ -6,6 +6,10 @@ import androidx.navigation.Navigation;
 
 import android.os.Bundle;
 
+import java.util.List;
+
+import ca.qc.johnabbott.cs5a6.virtualdressroom.model.GalleryPhoto;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.model.GalleryPhotoDBHandler;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.CropPhotoFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -13,7 +17,19 @@ public class MainActivity extends AppCompatActivity {
     private CropPhotoFragment cropPhotoFragment;
 
     NavController navController;
+    private GalleryPhotoDBHandler galleryPhotoDBHandler;
+    private List<GalleryPhoto> data;
+    public MainActivity() {
+        galleryPhotoDBHandler = getGalleryPhotoDBHandler();
+    }
 
+
+    public GalleryPhotoDBHandler getGalleryPhotoDBHandler() {
+        if(galleryPhotoDBHandler==null){
+            galleryPhotoDBHandler = new GalleryPhotoDBHandler(this);
+        }
+        return galleryPhotoDBHandler;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
