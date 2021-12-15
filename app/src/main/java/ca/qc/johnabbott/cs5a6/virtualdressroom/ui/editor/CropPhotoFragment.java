@@ -95,7 +95,7 @@ public class CropPhotoFragment extends Fragment {
                         .setBytes(bitmapData);
 
                 try {
-                    activity.getApplicationDbHandler().getOutfitPhotoTable().create(photo);
+                    activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().create(photo);
                 } catch (DatabaseException e) {
                     e.printStackTrace();
                 }
@@ -108,7 +108,7 @@ public class CropPhotoFragment extends Fragment {
         cropView.setFragment(this);
 
         try {
-            List<Photo> photos = activity.getApplicationDbHandler().getOutfitPhotoTable().readAll();
+            List<Photo> photos = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().readAll();
 
             if (!photos.isEmpty()) {
                 cropView.setBitmap(BitmapHelper.convertToBitmap(photos.get(0).getBytes()));
