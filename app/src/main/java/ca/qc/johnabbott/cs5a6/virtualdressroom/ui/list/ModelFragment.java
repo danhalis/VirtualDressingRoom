@@ -17,9 +17,12 @@ import java.util.List;
 
 import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.Photo;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.databinding.FragmentModelListBinding;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingItem;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingType;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.DatabaseException;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.helper.BitmapHelper;
 
 /**
  * A fragment representing a list of Items.
@@ -76,38 +79,52 @@ public class ModelFragment extends Fragment
         binding.topsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         binding.bottomsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 
-        List<ClothingItem> tempItems = new ArrayList<>();
+        MainActivity activity = (MainActivity) getActivity();
 
-        byte[] top = new byte[1];
+        List<Photo> topPhotos = new ArrayList<>();
 
-        tempItems.add(new ClothingItem(0, ClothingType.TOP, top));
-        tempItems.add(new ClothingItem(1, ClothingType.TOP, top));
-        tempItems.add(new ClothingItem(2, ClothingType.TOP, top));
-        tempItems.add(new ClothingItem(3, ClothingType.TOP, top));
-        tempItems.add(new ClothingItem(4, ClothingType.TOP, top));
-        tempItems.add(new ClothingItem(5, ClothingType.TOP, top));
-        tempItems.add(new ClothingItem(6, ClothingType.TOP, top));
+        try {
+            topPhotos = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().readAll();
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
 
-        binding.topsRecyclerView.setAdapter(new ClothingRecyclerViewAdapter(tempItems, this, ClothingType.TOP));
+        List<ClothingItem> upperBodyItems = new ArrayList<>();
 
-        List<ClothingItem> tempItems2 = new ArrayList<>();
+        for (int i = 0; i < topPhotos.size(); i++)
+        {
+            upperBodyItems.add(new ClothingItem(i, ClothingType.TOP, topPhotos.get(i).getBytes()));
+            upperBodyItems.get(i).setId(topPhotos.get(i).getId());
+        }
 
-        byte[] bottom = new byte[1];
-        bottom[0] = 1;
+        binding.topsRecyclerView.setAdapter(new ClothingRecyclerViewAdapter(upperBodyItems, this, ClothingType.TOP));
 
-        tempItems2.add(new ClothingItem(0, ClothingType.BOTTOM, bottom));
-        tempItems2.add(new ClothingItem(1, ClothingType.BOTTOM, bottom));
-        tempItems2.add(new ClothingItem(2, ClothingType.BOTTOM, bottom));
-        tempItems2.add(new ClothingItem(3, ClothingType.BOTTOM, bottom));
-        tempItems2.add(new ClothingItem(4, ClothingType.BOTTOM, bottom));
-        tempItems2.add(new ClothingItem(5, ClothingType.BOTTOM, bottom));
-        tempItems2.add(new ClothingItem(6, ClothingType.BOTTOM, bottom));
+        List<Photo> bottomPhotos = new ArrayList<>();
 
-        binding.bottomsRecyclerView.setAdapter(new ClothingRecyclerViewAdapter(tempItems2, this, ClothingType.BOTTOM));
+        try {
+            bottomPhotos = activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().readAll();
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+
+        List<ClothingItem> lowerBodyItems = new ArrayList<>();
+
+        for (int i = 0; i < bottomPhotos.size(); i++)
+        {
+            lowerBodyItems.add(new ClothingItem(i, ClothingType.BOTTOM, bottomPhotos.get(i).getBytes()));
+            lowerBodyItems.get(i).setId(bottomPhotos.get(i).getId());
+        }
+
+        binding.bottomsRecyclerView.setAdapter(new ClothingRecyclerViewAdapter(lowerBodyItems, this, ClothingType.BOTTOM));
 
         binding.topsRecyclerView.getAdapter();
         binding.bottomsRecyclerView.getAdapter();
 
         return binding.getRoot();
+    }
+
+    public FragmentModelListBinding getBinding()
+    {
+        return binding;
     }
 }

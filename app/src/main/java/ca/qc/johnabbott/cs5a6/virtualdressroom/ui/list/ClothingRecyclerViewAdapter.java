@@ -3,6 +3,8 @@ package ca.qc.johnabbott.cs5a6.virtualdressroom.ui.list;
 import androidx.navigation.NavController;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +14,7 @@ import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.databinding.ListItemClothingBinding;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingItem;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingType;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.Table;
 
 import java.util.List;
 
@@ -73,9 +76,23 @@ public class ClothingRecyclerViewAdapter extends RecyclerView.Adapter<ClothingRe
 
             this.binding.constraintLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
-                public boolean onLongClick(View v) {
-                    NavController navController = ((MainActivity)modelFragment.getActivity()).getNavController();
-                    ClothingListBottomSheet clothingListBottomSheet = new ClothingListBottomSheet(modelFragment.getContext(), clothingItem, ClothingRecyclerViewAdapter.this, navController);
+                public boolean onLongClick(View v)
+                {
+                    MainActivity mainActivity = (MainActivity) modelFragment.getActivity();
+
+                    Table theTable;
+
+                    if (ClothingRecyclerViewAdapter.this.clothingType == ClothingType.TOP)
+                    {
+                        theTable = mainActivity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable();
+                    }
+                    else
+                    {
+                        theTable = mainActivity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable();
+                    }
+
+                    NavController navController = mainActivity.getNavController();
+                    ClothingListBottomSheet clothingListBottomSheet = new ClothingListBottomSheet(modelFragment.getContext(), clothingItem, ClothingRecyclerViewAdapter.this, navController, theTable);
                     clothingListBottomSheet.show();
 
                     return false;
@@ -85,7 +102,11 @@ public class ClothingRecyclerViewAdapter extends RecyclerView.Adapter<ClothingRe
             this.binding.constraintLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // Add To Model
+                    Bitmap bmp = BitmapFactory.decodeByteArray(clothingItem.getImage(), 0, clothingItem.getImage().length);
+
+
+                    //if (bmp.equals(modelFragment.getBinding().))
+                    modelFragment.getBinding().topsImageView.setImageBitmap(bmp);
                 }
             });
 
@@ -95,19 +116,9 @@ public class ClothingRecyclerViewAdapter extends RecyclerView.Adapter<ClothingRe
         {
             clothingItem = item;
 
-            // Temporary
+            Bitmap bmp = BitmapFactory.decodeByteArray(item.getImage(), 0, item.getImage().length);
 
-            if (clothingItem.getImage()[0] == 0)
-            {
-                binding.imageView.setBackgroundResource(R.drawable.black_shirt);
-            }
-
-            if (clothingItem.getImage()[0] == 1)
-            {
-                binding.imageView.setBackgroundResource(R.drawable.khaki);
-            }
-
-
+            binding.imageView.setImageBitmap(bmp);
         }
 
     }
