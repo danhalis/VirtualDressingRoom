@@ -43,14 +43,12 @@ public class GalleryPhotoDBHandler extends SQLiteOpenHelper {
         try {
             galleryPhotoTable.createTable(db);
 
-        } catch (ParseException | DatabaseException e) {
+        } catch (DatabaseException e) {
             e.printStackTrace();
         }
         if( galleryPhotoTable.hasInitialData()) {
             try {
                 galleryPhotoTable.initialize(db);
-            } catch (ParseException e) {
-                e.printStackTrace();
             } catch (DatabaseException e) {
                 e.printStackTrace();
             }

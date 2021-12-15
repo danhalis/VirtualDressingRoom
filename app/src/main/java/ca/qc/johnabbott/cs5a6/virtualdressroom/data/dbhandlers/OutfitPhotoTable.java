@@ -1,0 +1,45 @@
+package ca.qc.johnabbott.cs5a6.virtualdressroom.data.dbhandlers;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.Photo;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.Column;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.DatabaseException;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.Table;
+
+public class OutfitPhotoTable extends Table<Photo> {
+
+    public static final String TABLE_NAME = "outfitPhoto";
+    public static final String COLUMN_OUTFIT_TYPE_CODE = "outfitTypeCode";
+    public static final String COLUMN_BYTES = "bytes";
+
+    public OutfitPhotoTable(SQLiteOpenHelper dbh) {
+        super(dbh, TABLE_NAME);
+        addColumn(new Column(COLUMN_BYTES, Column.Type.BLOB));
+    }
+
+    @Override
+    protected ContentValues toContentValues(Photo element) throws DatabaseException {
+        ContentValues values = new ContentValues();
+        // save outfit type code
+        values.put(COLUMN_OUTFIT_TYPE_CODE, element.getOutfitType().getCode());
+        // save photo bytes
+        values.put(COLUMN_BYTES, element.getBytes());
+
+        return values;
+    }
+
+    @Override
+    protected Photo fromCursor(Cursor cursor) throws DatabaseException {
+
+        Photo photo = new Photo()
+                .setBytes(cursor.getBlob(1))
+                .setOutfitType(Photo.OutfitType.getOutfitTypeByCode(cursor.getInt(1)));
+
+        photo.setId(cursor.getLong(0));
+
+        return photo;
+    }
+}
