@@ -91,7 +91,6 @@ public class CropPhotoFragment extends Fragment {
                 byte[] bitmapData = BitmapHelper.convertToBytes(bitmap, Bitmap.CompressFormat.JPEG, 100);
 
                 Photo photo = new Photo()
-                        .setOutfitType(Photo.OutfitType.UPPER_BODY)
                         .setBytes(bitmapData);
 
                 try {
