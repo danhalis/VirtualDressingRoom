@@ -101,6 +101,7 @@ public class ClothingListBottomSheet extends BottomSheetDialog
                 Bitmap bmpClothingItem = BitmapFactory.decodeByteArray(item.getImage(), 0, item.getImage().length);
 
                 cropPhotoViewModel.setId(item.getId());
+                cropPhotoViewModel.setClothingType(item.getType());
                 cropPhotoViewModel.setCurrentBitmap(bmpClothingItem);
                 ClothingListBottomSheet.this.navController.navigate(R.id.action_modelFragment_to_cropPhotoFragment);
                 dismiss();
