@@ -37,6 +37,7 @@ public class CropView extends View implements View.OnTouchListener {
     private final Context context;
     private CropPhotoFragment fragment;
 
+    private Bitmap emptyBitmap;
     private Bitmap bitmap;
     private boolean requiresScalingBitmap;
     private int scaledBitmapWidth;
@@ -61,6 +62,9 @@ public class CropView extends View implements View.OnTouchListener {
 
         setFocusable(true);
         setFocusableInTouchMode(true);
+
+        Drawable emptyDrawable = AppCompatResources.getDrawable(this.context, R.drawable.empty);
+        emptyBitmap = BitmapHelper.convertToBitmap(emptyDrawable);
 
         // Get placeholder image
         Drawable drawable = AppCompatResources.getDrawable(this.context, R.drawable.sample_photo_to_crop);
@@ -111,6 +115,8 @@ public class CropView extends View implements View.OnTouchListener {
             int bitMapHeight = bitmap.getHeight();
             float ratio = (float) bitMapWidth / bitMapHeight;
             float scaledHeight = getWidth() / ratio;
+
+            emptyBitmap = Bitmap.createScaledBitmap(emptyBitmap, getWidth(), (int) scaledHeight, false);
 
             bitmap = Bitmap.createScaledBitmap(bitmap, getWidth(), (int) scaledHeight, false);
             scaledBitmapWidth = bitmap.getWidth();
@@ -252,16 +258,20 @@ public class CropView extends View implements View.OnTouchListener {
 
         canvas.drawPath(path, paint);
 
+        Rect rect = new Rect(0, 0, scaledBitmapWidth, scaledBitmapHeight);
+
         // crop inside or outside
         if (keepInner) {
-            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+            canvas.drawBitmap(emptyBitmap, null, rect, paint);
 
+            canvas.drawPath(path, paint);
+            paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+            canvas.drawBitmap(bitmap, null, rect, paint);
         } else {
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
+            canvas.drawBitmap(bitmap, null, rect, paint);
         }
-
-        Rect rect = new Rect(0, 0, scaledBitmapWidth, scaledBitmapHeight);
-        canvas.drawBitmap(bitmap, null, rect, paint);
 
         resultImage.setWidth(scaledBitmapWidth);
         resultImage.setHeight(scaledBitmapHeight);
