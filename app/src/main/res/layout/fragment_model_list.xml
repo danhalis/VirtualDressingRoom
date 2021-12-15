@@ -84,7 +84,7 @@
             app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
-                android:id="@+id/imageView2"
+                android:id="@+id/model_imageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:adjustViewBounds="true"
@@ -92,7 +92,7 @@
                 android:src="@drawable/manequin" />
 
             <ImageView
-                android:id="@+id/imageView7"
+                android:id="@+id/bottoms_imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -101,7 +101,7 @@
                 android:src="@drawable/khaki" />
 
             <ImageView
-                android:id="@+id/imageView6"
+                android:id="@+id/tops_imageView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
