@@ -1,5 +1,10 @@
 package ca.qc.johnabbott.cs5a6.virtualdressroom.data.models;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+
+import java.io.ByteArrayOutputStream;
+
 import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.Identifiable;
 
 public class Photo implements Identifiable<Long> {

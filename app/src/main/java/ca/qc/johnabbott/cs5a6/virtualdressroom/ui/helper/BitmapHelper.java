@@ -1,11 +1,15 @@
 package ca.qc.johnabbott.cs5a6.virtualdressroom.ui.helper;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import java.io.ByteArrayOutputStream;
+
 public class BitmapHelper {
+
     // Source: https://stackoverflow.com/a/10600736
     public static Bitmap convertToBitmap(Drawable drawable) {
         Bitmap bitmap;
@@ -27,5 +31,15 @@ public class BitmapHelper {
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
         return bitmap;
+    }
+
+    public static Bitmap convertToBitmap(byte[] bytes) {
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+    }
+
+    public static byte[] convertToBytes(Bitmap bitmap, Bitmap.CompressFormat format, int quality) {
+        ByteArrayOutputStream blob = new ByteArrayOutputStream();
+        bitmap.compress(format, quality, blob);
+        return blob.toByteArray();
     }
 }

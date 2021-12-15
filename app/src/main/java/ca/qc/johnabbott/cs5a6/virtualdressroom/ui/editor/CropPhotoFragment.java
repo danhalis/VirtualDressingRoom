@@ -8,10 +8,16 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
+
+import java.util.List;
 
 import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.Photo;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.DatabaseException;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.helper.BitmapHelper;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.views.CropView;
 
 /**
@@ -70,13 +76,46 @@ public class CropPhotoFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_crop_photo, container, false);
 
-        MainActivity activity = (MainActivity) getActivity();
+        activity = (MainActivity) getActivity();
         assert activity != null;
         activity.setCropPhotoFragment(this);
 
-        resultImageView = view.findViewById(R.id.imageView);
+        Button saveButton = view.findViewById(R.id.saveCroppedPhotoButton);
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bitmap bitmap = BitmapHelper.convertToBitmap(resultImageView.getDrawable());
+
+                if (bitmap == null) return;
+
+                byte[] bitmapData = BitmapHelper.convertToBytes(bitmap, Bitmap.CompressFormat.JPEG, 100);
+
+                Photo photo = new Photo()
+                        .setOutfitType(Photo.OutfitType.UPPER_BODY)
+                        .setBytes(bitmapData);
+
+                try {
+                    activity.getApplicationDbHandler().getOutfitPhotoTable().create(photo);
+                } catch (DatabaseException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        resultImageView = view.findViewById(R.id.cropResultImageView);
+
         cropView = view.findViewById(R.id.cropView);
         cropView.setFragment(this);
+
+        try {
+            List<Photo> photos = activity.getApplicationDbHandler().getOutfitPhotoTable().readAll();
+
+            if (!photos.isEmpty()) {
+                cropView.setBitmap(BitmapHelper.convertToBitmap(photos.get(0).getBytes()));
+            }
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
 
         return view;
     }

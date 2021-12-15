@@ -2,12 +2,18 @@ package ca.qc.johnabbott.cs5a6.virtualdressroom.data.dbhandlers;
 
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.drawable.Drawable;
 
+import androidx.appcompat.content.res.AppCompatResources;
+
+import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.Photo;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.Column;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.DatabaseException;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.Table;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.helper.BitmapHelper;
 
 public class OutfitPhotoTable extends Table<Photo> {
 
@@ -17,7 +23,13 @@ public class OutfitPhotoTable extends Table<Photo> {
 
     public OutfitPhotoTable(SQLiteOpenHelper dbh) {
         super(dbh, TABLE_NAME);
+        addColumn(new Column(COLUMN_OUTFIT_TYPE_CODE, Column.Type.INTEGER));
         addColumn(new Column(COLUMN_BYTES, Column.Type.BLOB));
+    }
+
+    @Override
+    public void initialize(SQLiteDatabase database) throws DatabaseException {
+
     }
 
     @Override
@@ -35,8 +47,8 @@ public class OutfitPhotoTable extends Table<Photo> {
     protected Photo fromCursor(Cursor cursor) throws DatabaseException {
 
         Photo photo = new Photo()
-                .setBytes(cursor.getBlob(1))
-                .setOutfitType(Photo.OutfitType.getOutfitTypeByCode(cursor.getInt(1)));
+                .setOutfitType(Photo.OutfitType.getOutfitTypeByCode(cursor.getInt(1)))
+                .setBytes(cursor.getBlob(2));
 
         photo.setId(cursor.getLong(0));
 

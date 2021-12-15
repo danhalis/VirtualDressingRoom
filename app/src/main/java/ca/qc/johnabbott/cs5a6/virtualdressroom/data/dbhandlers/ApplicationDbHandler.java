@@ -31,4 +31,8 @@ public class ApplicationDbHandler extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
+
+    public OutfitPhotoTable getOutfitPhotoTable() {
+        return outfitPhotoTable;
+    }
 }
