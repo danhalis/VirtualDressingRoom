@@ -8,8 +8,8 @@ import android.os.Bundle;
 
 import java.util.List;
 
-import ca.qc.johnabbott.cs5a6.virtualdressroom.model.GalleryPhoto;
-import ca.qc.johnabbott.cs5a6.virtualdressroom.model.GalleryPhotoDBHandler;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.GalleryPhoto;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.data.dbhandlers.GalleryPhotoDBHandler;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.CropPhotoFragment;
 
 public class MainActivity extends AppCompatActivity {

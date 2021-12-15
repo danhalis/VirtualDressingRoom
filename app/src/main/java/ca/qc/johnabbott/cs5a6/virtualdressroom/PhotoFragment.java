@@ -14,7 +14,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 
 import ca.qc.johnabbott.cs5a6.virtualdressroom.databinding.FragmentPhotoBinding;
-import ca.qc.johnabbott.cs5a6.virtualdressroom.model.GalleryPhoto;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.GalleryPhoto;
 
 
 public class PhotoFragment extends Fragment {
