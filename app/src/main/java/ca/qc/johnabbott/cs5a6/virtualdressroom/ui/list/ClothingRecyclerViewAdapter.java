@@ -93,7 +93,7 @@ public class ClothingRecyclerViewAdapter extends RecyclerView.Adapter<ClothingRe
                     }
 
                     NavController navController = mainActivity.getNavController();
-                    ClothingListBottomSheet clothingListBottomSheet = new ClothingListBottomSheet(modelFragment.getContext(), clothingItem, ClothingRecyclerViewAdapter.this, navController, theTable);
+                    ClothingListBottomSheet clothingListBottomSheet = new ClothingListBottomSheet(modelFragment.getContext(), clothingItem, ClothingRecyclerViewAdapter.this, navController, theTable, mainActivity.getCropPhotoViewModel());
                     clothingListBottomSheet.show();
 
                     return false;
