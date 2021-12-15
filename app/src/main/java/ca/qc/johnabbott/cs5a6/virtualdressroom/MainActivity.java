@@ -12,10 +12,13 @@ import ca.qc.johnabbott.cs5a6.virtualdressroom.data.dbhandlers.ApplicationDbHand
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.GalleryPhoto;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.dbhandlers.GalleryPhotoDBHandler;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.CropPhotoFragment;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.viewmodels.CropPhotoViewModel;
 
 public class MainActivity extends AppCompatActivity {
 
+    private CropPhotoViewModel cropPhotoViewModel;
     private CropPhotoFragment cropPhotoFragment;
+
 
     NavController navController;
     private ApplicationDbHandler applicationDbHandler;
@@ -25,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
     public MainActivity() {
         applicationDbHandler = getApplicationDbHandler();
         galleryPhotoDBHandler = getGalleryPhotoDBHandler();
+
+        cropPhotoViewModel = new CropPhotoViewModel();
     }
 
     public ApplicationDbHandler getApplicationDbHandler() {
@@ -56,11 +61,7 @@ public class MainActivity extends AppCompatActivity {
         return navController;
     }
 
-    public void setCropPhotoFragment(CropPhotoFragment cropPhotoFragment) {
-        this.cropPhotoFragment = cropPhotoFragment;
-    }
-
-    public CropPhotoFragment getCropPhotoFragment() {
-        return cropPhotoFragment;
+    public CropPhotoViewModel getCropPhotoViewModel() {
+        return cropPhotoViewModel;
     }
 }
