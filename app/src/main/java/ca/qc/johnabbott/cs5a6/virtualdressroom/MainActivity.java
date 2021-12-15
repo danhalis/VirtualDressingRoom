@@ -8,8 +8,9 @@ import android.os.Bundle;
 
 import java.util.List;
 
-import ca.qc.johnabbott.cs5a6.virtualdressroom.model.GalleryPhoto;
-import ca.qc.johnabbott.cs5a6.virtualdressroom.model.GalleryPhotoDBHandler;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.data.dbhandlers.ApplicationDbHandler;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.GalleryPhoto;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.data.dbhandlers.GalleryPhotoDBHandler;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.CropPhotoFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -17,35 +18,42 @@ public class MainActivity extends AppCompatActivity {
     private CropPhotoFragment cropPhotoFragment;
 
     NavController navController;
+    private ApplicationDbHandler applicationDbHandler;
     private GalleryPhotoDBHandler galleryPhotoDBHandler;
     private List<GalleryPhoto> data;
+
     public MainActivity() {
+        applicationDbHandler = getApplicationDbHandler();
         galleryPhotoDBHandler = getGalleryPhotoDBHandler();
     }
 
+    public ApplicationDbHandler getApplicationDbHandler() {
+        if (applicationDbHandler == null) {
+            applicationDbHandler = new ApplicationDbHandler(this);
+        }
+
+        return applicationDbHandler;
+    }
 
     public GalleryPhotoDBHandler getGalleryPhotoDBHandler() {
-        if(galleryPhotoDBHandler==null){
+        if (galleryPhotoDBHandler == null) {
             galleryPhotoDBHandler = new GalleryPhotoDBHandler(this);
         }
+
         return galleryPhotoDBHandler;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
-
-        //Intent intent = new Intent(this, EditPhotoActivity.class);
-        //startActivity(intent);
     }
 
     public NavController getNavController()
     {
         return navController;
-//        Intent intent = new Intent(this, EditPhotoActivity.class);
-//        startActivity(intent);
     }
 
     public void setCropPhotoFragment(CropPhotoFragment cropPhotoFragment) {

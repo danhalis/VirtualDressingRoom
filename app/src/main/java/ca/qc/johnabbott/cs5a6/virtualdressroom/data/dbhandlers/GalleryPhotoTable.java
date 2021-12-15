@@ -1,4 +1,4 @@
-package ca.qc.johnabbott.cs5a6.virtualdressroom.model;
+package ca.qc.johnabbott.cs5a6.virtualdressroom.data.dbhandlers;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 
-
+import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.GalleryPhoto;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.Table;
 
 
