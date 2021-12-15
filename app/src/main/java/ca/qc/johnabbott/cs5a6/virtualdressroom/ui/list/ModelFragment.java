@@ -76,6 +76,22 @@ public class ModelFragment extends Fragment
             }
         });
 
+        binding.topsImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                binding.topsImageView.setImageDrawable(null);
+            }
+        });
+
+        binding.bottomsImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                binding.bottomsImageView.setImageDrawable(null);
+            }
+        });
+
         binding.topsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         binding.bottomsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
 

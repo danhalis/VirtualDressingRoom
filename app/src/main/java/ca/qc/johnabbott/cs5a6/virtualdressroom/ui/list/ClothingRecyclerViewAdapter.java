@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,7 +93,7 @@ public class ClothingRecyclerViewAdapter extends RecyclerView.Adapter<ClothingRe
                     }
 
                     NavController navController = mainActivity.getNavController();
-                    ClothingListBottomSheet clothingListBottomSheet = new ClothingListBottomSheet(modelFragment.getContext(), clothingItem, ClothingRecyclerViewAdapter.this, navController, theTable);
+                    ClothingListBottomSheet clothingListBottomSheet = new ClothingListBottomSheet(modelFragment.getContext(), clothingItem, ClothingRecyclerViewAdapter.this, navController, theTable, mainActivity.getCropPhotoViewModel());
                     clothingListBottomSheet.show();
 
                     return false;
@@ -101,12 +102,19 @@ public class ClothingRecyclerViewAdapter extends RecyclerView.Adapter<ClothingRe
 
             this.binding.constraintLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    Bitmap bmp = BitmapFactory.decodeByteArray(clothingItem.getImage(), 0, clothingItem.getImage().length);
+                public void onClick(View v)
+                {
+                    Bitmap bmpClothingItem = BitmapFactory.decodeByteArray(clothingItem.getImage(), 0, clothingItem.getImage().length);
 
+                    if (clothingItem.getType() == ClothingType.TOP)
+                    {
+                        modelFragment.getBinding().topsImageView.setImageBitmap(bmpClothingItem);
+                    }
+                    else
+                    {
+                        modelFragment.getBinding().bottomsImageView.setImageBitmap(bmpClothingItem);
+                    }
 
-                    //if (bmp.equals(modelFragment.getBinding().))
-                    modelFragment.getBinding().topsImageView.setImageBitmap(bmp);
                 }
             });
 

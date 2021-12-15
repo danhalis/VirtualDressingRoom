@@ -91,11 +91,12 @@ public class CropPhotoFragment extends Fragment {
         cropView.setFragment(this);
 
         try {
-            List<Photo> photos = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().readAll();
+
+            Photo photo = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().read(viewModel.getId());
 
             // set photo in CropView
-            if (!photos.isEmpty()) {
-                cropView.setBitmap(BitmapHelper.convertToBitmap(photos.get(0).getBytes()));
+            if (photo != null) {
+                cropView.setBitmap(BitmapHelper.convertToBitmap(photo.getBytes()));
             }
             else {
                 // Get placeholder image

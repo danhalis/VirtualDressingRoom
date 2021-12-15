@@ -1,6 +1,8 @@
 package ca.qc.johnabbott.cs5a6.virtualdressroom.ui.list;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 
@@ -19,6 +21,7 @@ import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingType;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.Photo;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.databinding.BottomSheetClothingListBinding;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.Table;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.viewmodels.CropPhotoViewModel;
 
 /**
  * A bottom sheet dialog that can trash and set the priority to high for a task in a recycler view.
@@ -31,8 +34,9 @@ public class ClothingListBottomSheet extends BottomSheetDialog
     private NavController navController;
     private UpperBodyOutfitPhotoTable topsTable;
     private LowerBodyOutfitPhotoTable bottomsTable;
+    private CropPhotoViewModel cropPhotoViewModel;
 
-    public ClothingListBottomSheet(@NonNull Context context, ClothingItem item, ClothingRecyclerViewAdapter adapter, NavController navController, Table clothingTable)
+    public ClothingListBottomSheet(@NonNull Context context, ClothingItem item, ClothingRecyclerViewAdapter adapter, NavController navController, Table clothingTable, CropPhotoViewModel cropPhotoViewModel)
     {
         super(context);
         this.item = item;
@@ -48,6 +52,7 @@ public class ClothingListBottomSheet extends BottomSheetDialog
 
         this.adapter = adapter;
         this.navController = navController;
+        this.cropPhotoViewModel = cropPhotoViewModel;
     }
 
     @Override
@@ -93,6 +98,11 @@ public class ClothingListBottomSheet extends BottomSheetDialog
             @Override
             public void onClick(View view)
             {
+                Bitmap bmpClothingItem = BitmapFactory.decodeByteArray(item.getImage(), 0, item.getImage().length);
+
+                cropPhotoViewModel.setId(item.getId());
+                cropPhotoViewModel.setClothingType(item.getType());
+                cropPhotoViewModel.setCurrentBitmap(bmpClothingItem);
                 ClothingListBottomSheet.this.navController.navigate(R.id.action_modelFragment_to_cropPhotoFragment);
                 dismiss();
             }
