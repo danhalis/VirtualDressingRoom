@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import java.util.List;
+import java.util.Objects;
 
 import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
@@ -119,8 +120,13 @@ public class CropPhotoFragment extends Fragment {
         assert activity != null;
         viewModel = activity.getCropPhotoViewModel();
 
-        cropView = view.findViewById(R.id.cropView);
-        cropView.setFragment(this);
+        if (cropView == null) {
+            cropView = view.findViewById(R.id.cropView);
+            cropView.setFragment(this);
+        }
+        else {
+            initNewCropView();
+        }
 
         loadImageIntoCropView();
 
@@ -130,17 +136,7 @@ public class CropPhotoFragment extends Fragment {
         undoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                if (!cropView.wasUsed()) return;
-
-                CropView newCropView = new CropView(activity);
-                newCropView.setFragment(CropPhotoFragment.this);
-                ViewHelper.replaceView(cropView, newCropView);
-                cropView = newCropView;
-
-                loadImageIntoCropView();
-
-                resultImageView.setImageBitmap(null);
+                initNewCropView();
             }
         });
 
@@ -166,8 +162,18 @@ public class CropPhotoFragment extends Fragment {
         return view;
     }
 
-    private void createNewCropView() {
+    private void initNewCropView() {
 
+        if (!cropView.wasUsed()) return;
+
+        CropView newCropView = new CropView(activity);
+        newCropView.setFragment(CropPhotoFragment.this);
+        ViewHelper.replaceView(cropView, newCropView);
+        cropView = newCropView;
+
+        loadImageIntoCropView();
+
+        resultImageView.setImageBitmap(null);
     }
 
     public void setResultImageBitmap(Bitmap bitmap) {

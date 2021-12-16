@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Intent;
 import android.os.Bundle;
 
 import java.util.List;
@@ -15,6 +18,8 @@ import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.CropPhotoFragment;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.viewmodels.CropPhotoViewModel;
 
 public class MainActivity extends AppCompatActivity {
+
+    public static final String APPLICATION_NOTIFICATION_CHANNEL = "virtual-dressing-room-notification-channel";
 
     private CropPhotoViewModel cropPhotoViewModel;
     private CropPhotoFragment cropPhotoFragment;
@@ -54,6 +59,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
+
+        // create notification channel
+        NotificationChannel channel = new NotificationChannel(
+                APPLICATION_NOTIFICATION_CHANNEL,
+                "Virtual Dressing Room",
+                NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setDescription("This channel notify the successful state when saving pictures in the app.");
+        NotificationManager notificationManager = getSystemService(NotificationManager.class);
+        notificationManager.createNotificationChannel(channel);
     }
 
     public NavController getNavController()
