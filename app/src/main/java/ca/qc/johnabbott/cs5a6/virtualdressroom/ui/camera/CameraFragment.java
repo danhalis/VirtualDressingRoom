@@ -1,4 +1,4 @@
-package ca.qc.johnabbott.cs5a6.virtualdressroom;
+package ca.qc.johnabbott.cs5a6.virtualdressroom.ui.camera;
 
 import android.Manifest;
 import android.app.Activity;
@@ -49,6 +49,8 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.databinding.FragmentCameraBinding;
 
 

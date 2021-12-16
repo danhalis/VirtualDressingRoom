@@ -1,4 +1,4 @@
-package ca.qc.johnabbott.cs5a6.virtualdressroom;
+package ca.qc.johnabbott.cs5a6.virtualdressroom.ui.options;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.databinding.FragmentSelectPhotoOptionsBinding;
 
 

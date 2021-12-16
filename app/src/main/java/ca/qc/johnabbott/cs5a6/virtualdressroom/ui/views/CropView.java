@@ -56,6 +56,42 @@ public class CropView extends View implements View.OnTouchListener {
 
     private boolean didRegisterFirstPoint;
 
+    private boolean didCrop = false;
+
+    public CropView(Context context) {
+        super(context);
+
+        this.context = context;
+
+        setFocusable(true);
+        setFocusableInTouchMode(true);
+
+        Drawable emptyDrawable = AppCompatResources.getDrawable(this.context, R.drawable.empty);
+        emptyBitmap = BitmapHelper.convertToBitmap(emptyDrawable);
+
+        // init lasso paint
+        lassoPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        lassoPaint.setStyle(Paint.Style.STROKE);
+        lassoPaint.setPathEffect(
+                new DashPathEffect(
+                        new float[] { DASH_LENGTH, DASH_GAP },
+                        0
+                )
+        );
+        lassoPaint.setStrokeWidth(STROKE_WIDTH);
+        lassoPaint.setColor(Color.WHITE);
+
+        // init lasso path
+        lassoPath = new Path();
+
+        // init lasso points
+        lassoPoints = new ArrayList<>();
+
+        setOnTouchListener(this);
+
+        didRegisterFirstPoint = false;
+    }
+
     public CropView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
@@ -258,7 +294,6 @@ public class CropView extends View implements View.OnTouchListener {
         Path path = new Path();
         List<Point> points = getLassoPoints();
 
-
         // set up path and find path bound points
         float smallestX = Math.max(points.get(0).x, 0);
         float smallestY = Math.max(points.get(0).y - yOffset, 0);
@@ -304,9 +339,7 @@ public class CropView extends View implements View.OnTouchListener {
             canvas.drawBitmap(bitmap, null, rect, paint);
 
             // crop out only the region inside the path
-            scaledBitmapWidth = (int) (biggestX - smallestX);
-            scaledBitmapHeight = (int) (biggestY - smallestY);
-            resultImage = Bitmap.createBitmap(resultImage, (int) smallestX, (int) smallestY, scaledBitmapWidth, scaledBitmapHeight);
+            resultImage = Bitmap.createBitmap(resultImage, (int) smallestX, (int) smallestY, (int) (biggestX - smallestX), (int) (biggestY - smallestY));
 
             // re-scale image
             resultImage = scaleBitmap(resultImage);
@@ -315,12 +348,19 @@ public class CropView extends View implements View.OnTouchListener {
             canvas.drawBitmap(bitmap, null, rect, paint);
         }
 
-        resultImage.setWidth(scaledBitmapWidth);
-        resultImage.setHeight(scaledBitmapHeight);
-
         fragment.setResultImageBitmap(resultImage);
 
         this.setVisibility(GONE);
+
+        didCrop = true;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public boolean wasUsed() {
+        return didCrop;
     }
 
     private void showCropDialog() {

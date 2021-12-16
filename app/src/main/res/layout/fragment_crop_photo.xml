@@ -36,9 +36,17 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
+            android:id="@+id/undoCropButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Undo" />
+
+        <Button
             android:id="@+id/goToSaveCroppedPhotoFragmentButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="Next" />
     </LinearLayout>
 
