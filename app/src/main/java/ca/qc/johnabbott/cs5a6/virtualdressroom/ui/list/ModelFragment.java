@@ -101,6 +101,8 @@ public class ModelFragment extends Fragment
 
                 adapter.setClothingItems(clothingItems);
 
+                activity.getCropPhotoViewModel().reset();
+
                 adapter.notifyDataSetChanged();
             }
 
