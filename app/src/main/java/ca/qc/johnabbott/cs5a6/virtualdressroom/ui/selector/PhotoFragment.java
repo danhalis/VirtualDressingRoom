@@ -17,6 +17,7 @@ import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.databinding.FragmentPhotoBinding;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.GalleryPhoto;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.helper.BitmapHelper;
 
 
 public class PhotoFragment extends Fragment {
@@ -48,13 +49,13 @@ public class PhotoFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 mainActivity.getNavController().navigate(R.id.action_photoFragment_to_selectPhotoFragment);
-               }
+            }
         });
         binding.button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            mainActivity.getNavController().navigate(R.id.action_photoFragment_to_cropPhotoFragment);
-
+                mainActivity.getCropPhotoViewModel().setCurrentBitmap(BitmapHelper.convertToBitmap(imageView.getDrawable()));
+                mainActivity.getNavController().navigate(R.id.action_photoFragment_to_cropPhotoFragment);
             }
         });
     }

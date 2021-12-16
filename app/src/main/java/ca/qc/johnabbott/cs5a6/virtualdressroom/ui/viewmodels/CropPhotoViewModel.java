@@ -41,7 +41,11 @@ public class CropPhotoViewModel extends ObservableModel<CropPhotoViewModel> {
         this.clothingType = type;
     }
 
-
+    public void reset() {
+        id = null;
+        clothingType = null;
+        currentBitmap = null;
+    }
 
     @Override
     protected CropPhotoViewModel get() {

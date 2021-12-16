@@ -115,7 +115,13 @@ public class SaveCroppedPhotoFragment extends Fragment {
                         .setBytes(bitmapData);
 
                 try {
-                    activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().create(photo);
+                    if (viewModel.getId() != -1) {
+                        photo.setId(viewModel.getId());
+                        activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().update(photo);
+                    }
+                    else {
+                        activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().create(photo);
+                    }
                 } catch (DatabaseException e) {
                     e.printStackTrace();
                 }

@@ -95,9 +95,7 @@ public class CropPhotoFragment extends Fragment {
             Long photoId = viewModel.getId();
 
             if (photoId == -1) {
-                // Get placeholder image
-                Drawable drawable = AppCompatResources.getDrawable(activity, R.drawable.sample_photo_to_crop);
-                cropView.setBitmap(BitmapHelper.convertToBitmap(drawable));
+                cropView.setBitmap(viewModel.getCurrentBitmap());
             }
             else {
                 Photo photo = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().read(viewModel.getId());
@@ -125,9 +123,7 @@ public class CropPhotoFragment extends Fragment {
                     Long photoId = viewModel.getId();
 
                     if (photoId == -1) {
-                        // Get placeholder image
-                        Drawable drawable = AppCompatResources.getDrawable(activity, R.drawable.sample_photo_to_crop);
-                        cropView.setBitmap(BitmapHelper.convertToBitmap(drawable));
+                        cropView.setBitmap(viewModel.getCurrentBitmap());
                     }
                     else {
                         Photo photo = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().read(viewModel.getId());
