@@ -1,4 +1,4 @@
-package ca.qc.johnabbott.cs5a6.virtualdressroom;
+package ca.qc.johnabbott.cs5a6.virtualdressroom.ui.selector;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,15 +7,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.databinding.FragmentSelectPhotoListBinding;
-import ca.qc.johnabbott.cs5a6.virtualdressroom.placeholder.PlaceholderContent;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.DatabaseException;
 
 /**
