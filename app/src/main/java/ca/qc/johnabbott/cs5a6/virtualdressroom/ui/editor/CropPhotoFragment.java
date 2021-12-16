@@ -19,6 +19,7 @@ import java.util.List;
 
 import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingType;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.Photo;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.DatabaseException;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.helper.BitmapHelper;
@@ -126,7 +127,13 @@ public class CropPhotoFragment extends Fragment {
                         cropView.setBitmap(viewModel.getCurrentBitmap());
                     }
                     else {
-                        Photo photo = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().read(viewModel.getId());
+                        Photo photo;
+                        if (viewModel.getClothingType() == ClothingType.TOP) {
+                            photo = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().read(viewModel.getId());
+                        }
+                        else {
+                            photo = activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().read(viewModel.getId());
+                        }
                         cropView.setBitmap(BitmapHelper.convertToBitmap(photo.getBytes()));
                     }
                 } catch (DatabaseException e) {
