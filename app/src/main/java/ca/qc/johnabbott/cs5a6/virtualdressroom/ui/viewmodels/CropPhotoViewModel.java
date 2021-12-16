@@ -12,7 +12,6 @@ public class CropPhotoViewModel extends ObservableModel<CropPhotoViewModel> {
 
     private ClothingType clothingType;
 
-
     public Bitmap getCurrentBitmap() {
         return currentBitmap;
     }
@@ -23,6 +22,7 @@ public class CropPhotoViewModel extends ObservableModel<CropPhotoViewModel> {
 
     public Long getId()
     {
+        if (id == null) return -1L;
         return id;
     }
 
@@ -41,7 +41,11 @@ public class CropPhotoViewModel extends ObservableModel<CropPhotoViewModel> {
         this.clothingType = type;
     }
 
-
+    public void reset() {
+        id = null;
+        clothingType = null;
+        currentBitmap = null;
+    }
 
     @Override
     protected CropPhotoViewModel get() {

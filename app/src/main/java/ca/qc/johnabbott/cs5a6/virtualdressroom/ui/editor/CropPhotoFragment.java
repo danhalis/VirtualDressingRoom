@@ -22,6 +22,7 @@ import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.Photo;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.DatabaseException;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.helper.BitmapHelper;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.helper.ViewHelper;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.viewmodels.CropPhotoViewModel;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.views.CropView;
 
@@ -91,17 +92,14 @@ public class CropPhotoFragment extends Fragment {
         cropView.setFragment(this);
 
         try {
+            Long photoId = viewModel.getId();
 
-            Photo photo = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().read(viewModel.getId());
-
-            // set photo in CropView
-            if (photo != null) {
-                cropView.setBitmap(BitmapHelper.convertToBitmap(photo.getBytes()));
+            if (photoId == -1) {
+                cropView.setBitmap(viewModel.getCurrentBitmap());
             }
             else {
-                // Get placeholder image
-                Drawable drawable = AppCompatResources.getDrawable(activity, R.drawable.sample_photo_to_crop);
-                cropView.setBitmap(BitmapHelper.convertToBitmap(drawable));
+                Photo photo = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().read(viewModel.getId());
+                cropView.setBitmap(BitmapHelper.convertToBitmap(photo.getBytes()));
             }
         } catch (DatabaseException e) {
             e.printStackTrace();
@@ -109,16 +107,60 @@ public class CropPhotoFragment extends Fragment {
 
         resultImageView = view.findViewById(R.id.cropResultImageView);
 
+        Button undoButton = view.findViewById(R.id.undoCropButton);
+        undoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (!cropView.wasUsed()) return;
+
+                CropView newCropView = new CropView(activity);
+                newCropView.setFragment(CropPhotoFragment.this);
+                ViewHelper.replaceView(cropView, newCropView);
+                cropView = newCropView;
+
+                try {
+                    Long photoId = viewModel.getId();
+
+                    if (photoId == -1) {
+                        cropView.setBitmap(viewModel.getCurrentBitmap());
+                    }
+                    else {
+                        Photo photo = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().read(viewModel.getId());
+                        cropView.setBitmap(BitmapHelper.convertToBitmap(photo.getBytes()));
+                    }
+                } catch (DatabaseException e) {
+                    e.printStackTrace();
+                }
+
+                resultImageView.setImageBitmap(null);
+            }
+        });
+
         Button nextButton = view.findViewById(R.id.goToSaveCroppedPhotoFragmentButton);
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewModel.setCurrentBitmap(BitmapHelper.convertToBitmap(resultImageView.getDrawable()));
+                Drawable drawable = resultImageView.getDrawable();
+
+                Bitmap bitmap;
+                if (drawable == null) {
+                    bitmap = cropView.getBitmap();
+                }
+                else {
+                    bitmap = BitmapHelper.convertToBitmap(resultImageView.getDrawable());
+                }
+
+                viewModel.setCurrentBitmap(bitmap);
                 activity.getNavController().navigate(R.id.action_cropPhotoFragment_to_saveCroppedPhotoFragment);
             }
         });
 
         return view;
+    }
+
+    private void createNewCropView() {
+
     }
 
     public void setResultImageBitmap(Bitmap bitmap) {
