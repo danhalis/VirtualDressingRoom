@@ -4,6 +4,8 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,6 +125,32 @@ public class ModelFragment extends Fragment
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+
+        ImageView modelImageView = binding.modelImageView;
+
+        int modelHeight = modelImageView.getHeight();
+        int modelWidth = modelImageView.getWidth();
+
+        binding.topsImageView.getLayoutParams().height = (int)(modelHeight * 0.35);
+
+        binding.topsImageView.getLayoutParams().width = modelWidth;
+
+        binding.bottomsImageView.getLayoutParams().height = (int)(modelHeight * 0.70);
+
+        binding.bottomsImageView.getLayoutParams().width = (int)(modelWidth * 0.55);
+
+        binding.bottomsImageView.setImageBitmap(null);
+        binding.topsImageView.setImageBitmap(null);
+
+        binding.topsImageView.requestLayout();
+        binding.bottomsImageView.requestLayout();
+
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
@@ -134,6 +163,7 @@ public class ModelFragment extends Fragment
         binding.headButtonImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                activity.getCropPhotoViewModel().reset();
                 activity.getCropPhotoViewModel().setIsHead(true);
                 if (currentHeadPhoto != null)
                 {
@@ -144,7 +174,6 @@ public class ModelFragment extends Fragment
                     activity.getCropPhotoViewModel().setId(null);
                 }
 
-                //.getCropPhotoViewModel().setCurrentBitmap(BitmapFactory.decodeByteArray(currentHeadPhoto.getBytes(), 0, currentHeadPhoto.getBytes().length));
                 activity.getNavController().navigate(R.id.action_modelFragment_to_selectPhotoOptionsFragment);
             }
         });
@@ -168,6 +197,7 @@ public class ModelFragment extends Fragment
         binding.addTopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                activity.getCropPhotoViewModel().reset();
                 activity.getCropPhotoViewModel().setClothingType(ClothingType.TOP);
                 activity.getNavController().navigate(R.id.action_modelFragment_to_selectPhotoOptionsFragment);
             }
@@ -176,6 +206,7 @@ public class ModelFragment extends Fragment
         binding.addBottomButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                activity.getCropPhotoViewModel().reset();
                 activity.getCropPhotoViewModel().setClothingType(ClothingType.BOTTOM);
                 activity.getNavController().navigate(R.id.action_modelFragment_to_selectPhotoOptionsFragment);
             }

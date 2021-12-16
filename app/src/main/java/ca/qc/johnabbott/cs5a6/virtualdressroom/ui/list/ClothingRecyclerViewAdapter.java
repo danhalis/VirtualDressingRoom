@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
@@ -115,13 +116,18 @@ public class ClothingRecyclerViewAdapter extends RecyclerView.Adapter<ClothingRe
                 @Override
                 public void onClick(View v)
                 {
-                    FrameLayout modelLayout = modelFragment.getBinding().frameLayout;
-                    int modelLayoutWidth = modelLayout.getWidth();
+                    ImageView modelImageView = modelFragment.getBinding().modelImageView;
 
-                    modelFragment.getBinding().topsImageView.setMinimumWidth(modelLayoutWidth);
-                    modelFragment.getBinding().topsImageView.setMaxWidth(modelLayoutWidth);
-                    modelFragment.getBinding().bottomsImageView.setMinimumWidth(modelLayoutWidth / 2);
-                    modelFragment.getBinding().bottomsImageView.setMaxWidth(modelLayoutWidth / 2);
+                    int modelHeight = modelImageView.getHeight();
+                    int modelWidth = modelImageView.getWidth();
+
+                    modelFragment.getBinding().topsImageView.getLayoutParams().height = (int)(modelHeight * 0.35);
+
+                    modelFragment.getBinding().topsImageView.getLayoutParams().width = modelWidth;
+
+                    modelFragment.getBinding().bottomsImageView.getLayoutParams().height = (int)(modelHeight * 0.70);
+
+                    modelFragment.getBinding().bottomsImageView.getLayoutParams().width = (int)(modelWidth * 0.55);
 
                     Bitmap bmpClothingItem = BitmapFactory.decodeByteArray(clothingItem.getImage(), 0, clothingItem.getImage().length);
 

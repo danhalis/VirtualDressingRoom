@@ -120,7 +120,7 @@ public class SaveCroppedPhotoFragment extends Fragment {
                 Photo photo = new Photo()
                         .setBytes(bitmapData);
 
-                String notificationDescription;
+                String notificationDescription = "";
 
                 try {
                     if (viewModel.getIsHead())
@@ -135,6 +135,8 @@ public class SaveCroppedPhotoFragment extends Fragment {
                             photo.setId(oldPhoto.getId());
                             activity.getApplicationDbHandler().getHeadPhotoTable().update(photo);
                         }
+
+                        notificationDescription = "Saved photo for head successfully!";
                     }
                     else
                     {
