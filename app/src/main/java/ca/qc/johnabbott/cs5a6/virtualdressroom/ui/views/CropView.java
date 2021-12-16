@@ -12,6 +12,7 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -66,10 +67,6 @@ public class CropView extends View implements View.OnTouchListener {
         Drawable emptyDrawable = AppCompatResources.getDrawable(this.context, R.drawable.empty);
         emptyBitmap = BitmapHelper.convertToBitmap(emptyDrawable);
 
-        // Get placeholder image
-        Drawable drawable = AppCompatResources.getDrawable(this.context, R.drawable.sample_photo_to_crop);
-        bitmap = BitmapHelper.convertToBitmap(drawable);
-
         // init lasso paint
         lassoPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         lassoPaint.setStyle(Paint.Style.STROKE);
@@ -110,21 +107,29 @@ public class CropView extends View implements View.OnTouchListener {
         super.onLayout(changed, left, top, right, bottom);
 
         if (!requiresScalingBitmap) {
-            // scale image to screen width
-            int bitMapWidth = bitmap.getWidth();
-            int bitMapHeight = bitmap.getHeight();
-            float ratio = (float) bitMapWidth / bitMapHeight;
-            float scaledHeight = getWidth() / ratio;
-
-            emptyBitmap = Bitmap.createScaledBitmap(emptyBitmap, getWidth(), (int) scaledHeight, false);
-
-            bitmap = Bitmap.createScaledBitmap(bitmap, getWidth(), (int) scaledHeight, false);
-            scaledBitmapWidth = bitmap.getWidth();
-            scaledBitmapHeight = bitmap.getHeight();
-            yOffset = (float) (getHeight() - scaledBitmapHeight) / 2;
+            bitmap = scaleBitmap(bitmap);
 
             requiresScalingBitmap = true;
         }
+    }
+
+    private Bitmap scaleBitmap(Bitmap bitmap) {
+        // scale image to screen width
+        int bitMapWidth = bitmap.getWidth();
+        int bitMapHeight = bitmap.getHeight();
+        float ratio = (float) bitMapWidth / bitMapHeight;
+        float scaledHeight = getWidth() / ratio;
+
+        Drawable emptyDrawable = AppCompatResources.getDrawable(this.context, R.drawable.empty);
+        emptyBitmap = BitmapHelper.convertToBitmap(emptyDrawable);
+        emptyBitmap = Bitmap.createScaledBitmap(emptyBitmap, getWidth(), (int) scaledHeight, false);
+
+        bitmap = Bitmap.createScaledBitmap(bitmap, getWidth(), (int) scaledHeight, false);
+        scaledBitmapWidth = bitmap.getWidth();
+        scaledBitmapHeight = bitmap.getHeight();
+        yOffset = (float) (getHeight() - scaledBitmapHeight) / 2;
+
+        return bitmap;
     }
 
     @Override
@@ -252,8 +257,35 @@ public class CropView extends View implements View.OnTouchListener {
 
         Path path = new Path();
         List<Point> points = getLassoPoints();
+
+
+        // set up path and find path bound points
+        float smallestX = Math.max(points.get(0).x, 0);
+        float smallestY = Math.max(points.get(0).y - yOffset, 0);
+        float biggestX = Math.min(points.get(0).x, scaledBitmapWidth);
+        float biggestY = Math.min(points.get(0).y - yOffset, scaledBitmapHeight);
+
         for (int i = 0; i < points.size(); i++) {
-            path.lineTo(points.get(i).x, points.get(i).y - yOffset);
+            float pointX = Math.max(points.get(i).x, 0);
+            pointX = Math.min(pointX, scaledBitmapWidth);
+
+            float pointY = Math.max(points.get(i).y - yOffset, 0);
+            pointY = Math.min(pointY, scaledBitmapHeight);
+
+            if (pointX < smallestX) {
+                smallestX = pointX;
+            }
+            if (pointX > biggestX) {
+                biggestX = pointX;
+            }
+            if (pointY < smallestY) {
+                smallestY = pointY;
+            }
+            if(pointY > biggestY) {
+                biggestY = pointY;
+            }
+
+            path.lineTo(pointX, pointY);
         }
 
         canvas.drawPath(path, paint);
@@ -262,12 +294,22 @@ public class CropView extends View implements View.OnTouchListener {
 
         // crop inside or outside
         if (keepInner) {
+            // replace the region outside the path with empty bitmap
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
             canvas.drawBitmap(emptyBitmap, null, rect, paint);
 
+            // keep the region inside the path
             canvas.drawPath(path, paint);
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
             canvas.drawBitmap(bitmap, null, rect, paint);
+
+            // crop out only the region inside the path
+            scaledBitmapWidth = (int) (biggestX - smallestX);
+            scaledBitmapHeight = (int) (biggestY - smallestY);
+            resultImage = Bitmap.createBitmap(resultImage, (int) smallestX, (int) smallestY, scaledBitmapWidth, scaledBitmapHeight);
+
+            // re-scale image
+            resultImage = scaleBitmap(resultImage);
         } else {
             paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_OUT));
             canvas.drawBitmap(bitmap, null, rect, paint);

@@ -27,10 +27,10 @@ import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.views.CropView;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link CropPhotoFragment#newInstance} factory method to
+ * Use the {@link SaveCroppedPhotoFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CropPhotoFragment extends Fragment {
+public class SaveCroppedPhotoFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,10 +44,9 @@ public class CropPhotoFragment extends Fragment {
     private MainActivity activity;
     private CropPhotoViewModel viewModel;
 
-    private CropView cropView;
     private ImageView resultImageView;
 
-    public CropPhotoFragment() {
+    public SaveCroppedPhotoFragment() {
         // Required empty public constructor
     }
 
@@ -57,10 +56,11 @@ public class CropPhotoFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment CropPhotoFragment.
+     * @return A new instance of fragment SaveCroppedPhotoFragment.
      */
-    public static CropPhotoFragment newInstance(String param1, String param2) {
-        CropPhotoFragment fragment = new CropPhotoFragment();
+    // TODO: Rename and change types and number of parameters
+    public static SaveCroppedPhotoFragment newInstance(String param1, String param2) {
+        SaveCroppedPhotoFragment fragment = new SaveCroppedPhotoFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -81,46 +81,51 @@ public class CropPhotoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_crop_photo, container, false);
+        View view = inflater.inflate(R.layout.fragment_save_cropped_photo, container, false);
 
         activity = (MainActivity) getActivity();
         assert activity != null;
         viewModel = activity.getCropPhotoViewModel();
 
-        cropView = view.findViewById(R.id.cropView);
-        cropView.setFragment(this);
-
-        try {
-            List<Photo> photos = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().readAll();
-
-            // set photo in CropView
-            if (!photos.isEmpty()) {
-                cropView.setBitmap(BitmapHelper.convertToBitmap(photos.get(0).getBytes()));
-            }
-            else {
-                // Get placeholder image
-                Drawable drawable = AppCompatResources.getDrawable(activity, R.drawable.sample_photo_to_crop);
-                cropView.setBitmap(BitmapHelper.convertToBitmap(drawable));
-            }
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-        }
+        //get the spinner from the xml.
+        Spinner dropdown = view.findViewById(R.id.outfitTypeSpinner);
+        // Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity,
+                R.array.outfit_types,
+                android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        dropdown.setAdapter(adapter);
 
         resultImageView = view.findViewById(R.id.cropResultImageView);
+        resultImageView.setImageBitmap(viewModel.getCurrentBitmap());
 
-        Button nextButton = view.findViewById(R.id.goToSaveCroppedPhotoFragmentButton);
-        nextButton.setOnClickListener(new View.OnClickListener() {
+        Button saveButton = view.findViewById(R.id.saveCroppedPhotoButton);
+        saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewModel.setCurrentBitmap(BitmapHelper.convertToBitmap(resultImageView.getDrawable()));
-                activity.getNavController().navigate(R.id.action_cropPhotoFragment_to_saveCroppedPhotoFragment);
+                Bitmap bitmap = BitmapHelper.convertToBitmap(resultImageView.getDrawable());
+
+                if (bitmap == null) return;
+
+                byte[] bitmapData = BitmapHelper.convertToBytes(bitmap, Bitmap.CompressFormat.PNG, 100);
+
+                Photo photo = new Photo()
+                        .setBytes(bitmapData);
+
+                try {
+                    activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().create(photo);
+                } catch (DatabaseException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         return view;
     }
 
-    public void setResultImageBitmap(Bitmap bitmap) {
-        resultImageView.setImageBitmap(bitmap);
-    }
+//    public void setResultImageBitmap(Bitmap bitmap) {
+//        resultImageView.setImageBitmap(bitmap);
+//    }
 }

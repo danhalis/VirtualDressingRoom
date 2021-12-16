@@ -2,4 +2,9 @@
     <string name="app_name">VirtualDressRoom</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="outfit_types">
+        <item>Upper Body</item>
+        <item>Lower Body</item>
+    </string-array>
 </resources>
