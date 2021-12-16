@@ -1,4 +1,4 @@
-package ca.qc.johnabbott.cs5a6.virtualdressroom;
+package ca.qc.johnabbott.cs5a6.virtualdressroom.ui.options;
 
 import android.app.Activity;
 import android.content.Context;
@@ -20,6 +20,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.databinding.FragmentSelectPhotoOptionsBinding;
 
 
@@ -43,10 +45,19 @@ public class SelectPhotoOptionsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (mainActivity.getCropPhotoViewModel().getIsHead()) {
+            binding.SelectPhotoButton.setText("Select a photo of your face");
+            binding.CameraButton.setText("Take a photo of your face");
+        }
+        else {
+            binding.SelectPhotoButton.setText("Select a photo of the outfit");
+            binding.CameraButton.setText("Take a photo of the outfit");
+        }
+
         binding.SelectPhotoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigate To Gallery Fragment.
+                mainActivity.getNavController().navigate(R.id.action_selectPhotoOptionsFragment_to_selectPhotoFragment);
             }
         });
         binding.CameraButton.setOnClickListener(new View.OnClickListener() {

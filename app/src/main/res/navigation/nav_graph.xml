@@ -19,16 +19,19 @@
     </fragment>
     <fragment
         android:id="@+id/selectPhotoOptionsFragment"
-        android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.SelectPhotoOptionsFragment"
+        android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.ui.options.SelectPhotoOptionsFragment"
         android:label="fragment_select_photo_options"
         tools:layout="@layout/fragment_select_photo_options" >
         <action
             android:id="@+id/action_selectPhotoOptionsFragment_to_cameraFragment"
             app:destination="@id/cameraFragment" />
+        <action
+            android:id="@+id/action_selectPhotoOptionsFragment_to_selectPhotoFragment"
+            app:destination="@id/selectPhotoFragment" />
     </fragment>
     <fragment
         android:id="@+id/cameraFragment"
-        android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.CameraFragment"
+        android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.ui.camera.CameraFragment"
         android:label="fragment_camera"
         tools:layout="@layout/fragment_camera" >
         <action
@@ -39,5 +42,39 @@
         android:id="@+id/cropPhotoFragment"
         android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.CropPhotoFragment"
         android:label="fragment_crop_photo"
-        tools:layout="@layout/fragment_crop_photo" />
+        tools:layout="@layout/fragment_crop_photo" >
+        <action
+            android:id="@+id/action_cropPhotoFragment_to_saveCroppedPhotoFragment"
+            app:destination="@id/saveCroppedPhotoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/selectPhotoFragment"
+        android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.ui.selector.SelectPhotoFragment"
+        android:label="fragment_select_photo_list"
+        tools:layout="@layout/fragment_select_photo_list" >
+        <action
+            android:id="@+id/action_selectPhotoFragment_to_photoFragment"
+            app:destination="@id/photoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/photoFragment"
+        android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.ui.selector.PhotoFragment"
+        android:label="fragment_photo"
+        tools:layout="@layout/fragment_photo" >
+        <action
+            android:id="@+id/action_photoFragment_to_selectPhotoFragment"
+            app:destination="@id/selectPhotoFragment" />
+        <action
+            android:id="@+id/action_photoFragment_to_cropPhotoFragment"
+            app:destination="@id/cropPhotoFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/saveCroppedPhotoFragment"
+        android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.SaveCroppedPhotoFragment"
+        android:label="fragment_save_cropped_photo"
+        tools:layout="@layout/fragment_save_cropped_photo" >
+        <action
+            android:id="@+id/action_saveCroppedPhotoFragment_to_modelFragment"
+            app:destination="@id/modelFragment" />
+    </fragment>
 </navigation>

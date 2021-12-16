@@ -4,16 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.editor.CropPhotoFragment">
-
-    <ca.qc.johnabbott.cs5a6.virtualdressroom.ui.views.CropView
-        android:id="@+id/cropView"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/actionsConstraintLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    tools:context=".ui.editor.SaveCroppedPhotoFragment">
 
     <ImageView
         android:id="@+id/cropResultImageView"
@@ -21,13 +12,14 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         android:cropToPadding="true"
-        app:layout_constraintBottom_toTopOf="@+id/actionsConstraintLayout"
+        app:layout_constraintBottom_toTopOf="@+id/saveLinearLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <LinearLayout
-        android:id="@+id/actionsConstraintLayout"
+        android:id="@+id/saveLinearLayout"
+
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -35,19 +27,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <Button
-            android:id="@+id/undoCropButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Undo" />
+<!--        <Spinner-->
+<!--            android:id="@+id/outfitTypeSpinner"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1" />-->
 
         <Button
-            android:id="@+id/goToSaveCroppedPhotoFragmentButton"
+            android:id="@+id/saveCroppedPhotoButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Next" />
+            android:text="Save" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
