@@ -118,10 +118,12 @@ public class ModelFragment extends Fragment
 
         Context context = getContext();
 
+        MainActivity activity = (MainActivity) getActivity();
+
         binding.headButtonImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity)getActivity()).getNavController().navigate(R.id.action_modelFragment_to_selectPhotoOptionsFragment);
+                activity.getNavController().navigate(R.id.action_modelFragment_to_selectPhotoOptionsFragment);
             }
         });
 
@@ -141,10 +143,24 @@ public class ModelFragment extends Fragment
             }
         });
 
+        binding.addTopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.getCropPhotoViewModel().setClothingType(ClothingType.TOP);
+                activity.getNavController().navigate(R.id.action_modelFragment_to_selectPhotoOptionsFragment);
+            }
+        });
+
+        binding.addTopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.getCropPhotoViewModel().setClothingType(ClothingType.BOTTOM);
+                activity.getNavController().navigate(R.id.action_modelFragment_to_selectPhotoOptionsFragment);
+            }
+        });
+
         binding.topsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         binding.bottomsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
-
-        MainActivity activity = (MainActivity) getActivity();
 
         List<Photo> topPhotos = new ArrayList<>();
 
