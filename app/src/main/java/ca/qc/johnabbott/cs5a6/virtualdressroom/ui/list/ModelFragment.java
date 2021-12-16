@@ -1,8 +1,11 @@
 package ca.qc.johnabbott.cs5a6.virtualdressroom.ui.list;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -12,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +39,7 @@ public class ModelFragment extends Fragment
     private FragmentModelListBinding binding;
     private static final String ARG_CLOTHING_LIST_COLUMN_COUNT = "column-count";
     private int clothingColumnCount = 1;
+    private Photo currentHeadPhoto;
 
 
     /**
@@ -70,44 +75,78 @@ public class ModelFragment extends Fragment
             @Override
             public void onUpdate(CropPhotoViewModel item)
             {
-                ClothingRecyclerViewAdapter adapter = (ClothingRecyclerViewAdapter) binding.topsRecyclerView.getAdapter();
-
-                List<Photo> photos = new ArrayList<>();
-
-                List<ClothingItem> clothingItems = new ArrayList<>();
-
-                try
+                if (!item.getIsHead())
                 {
-                    if (item.getClothingType() == ClothingType.TOP)
+                    ClothingRecyclerViewAdapter adapter = (ClothingRecyclerViewAdapter) binding.topsRecyclerView.getAdapter();
+
+                    List<Photo> photos = new ArrayList<>();
+
+                    List<ClothingItem> clothingItems = new ArrayList<>();
+
+                    try
                     {
-                        photos = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().readAll();
+                        if (item.getClothingType() == ClothingType.TOP)
+                        {
+                            photos = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().readAll();
+                        }
+                        else
+                        {
+                            adapter = (ClothingRecyclerViewAdapter) binding.bottomsRecyclerView.getAdapter();
+
+                            photos = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().readAll();
+                        }
                     }
-                    else
+                    catch (Exception e)
                     {
-                        adapter = (ClothingRecyclerViewAdapter) binding.bottomsRecyclerView.getAdapter();
-
-                        photos = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().readAll();
+                        System.out.println("Error: " + e);
                     }
+
+                    for (int i = 0; i < photos.size(); i++)
+                    {
+                        Photo thePhoto = photos.get(i);
+                        clothingItems.set(i, new ClothingItem(thePhoto.getId().intValue(), item.getClothingType(), thePhoto.getBytes()));
+                    }
+
+                    adapter.setClothingItems(clothingItems);
+
+                    adapter.notifyDataSetChanged();
                 }
-                catch (Exception e)
+                else
                 {
-                    System.out.println("Error: " + e);
+                    binding.headButtonImageView.setImageBitmap(item.getCurrentBitmap());
                 }
 
-                for (int i = 0; i < photos.size(); i++)
-                {
-                    Photo thePhoto = photos.get(i);
-                    clothingItems.set(i, new ClothingItem(thePhoto.getId().intValue(), item.getClothingType(), thePhoto.getBytes()));
-                }
-
-                adapter.setClothingItems(clothingItems);
 
                 activity.getCropPhotoViewModel().reset();
-
-                adapter.notifyDataSetChanged();
             }
 
         });
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+    {
+        super.onViewCreated(view, savedInstanceState);
+
+        ImageView modelImageView = binding.modelImageView;
+
+        int modelHeight = modelImageView.getHeight();
+        int modelWidth = modelImageView.getWidth();
+
+        binding.topsImageView.getLayoutParams().height = (int)(modelHeight * 0.35);
+
+        binding.topsImageView.getLayoutParams().width = modelWidth;
+
+        binding.bottomsImageView.getLayoutParams().height = (int)(modelHeight * 0.70);
+
+        binding.bottomsImageView.getLayoutParams().width = (int)(modelWidth * 0.55);
+
+        binding.bottomsImageView.setImageBitmap(null);
+        binding.topsImageView.setImageBitmap(null);
+
+        binding.topsImageView.requestLayout();
+        binding.bottomsImageView.requestLayout();
 
     }
 
@@ -124,6 +163,17 @@ public class ModelFragment extends Fragment
         binding.headButtonImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                activity.getCropPhotoViewModel().reset();
+                activity.getCropPhotoViewModel().setIsHead(true);
+                if (currentHeadPhoto != null)
+                {
+                    activity.getCropPhotoViewModel().setId(currentHeadPhoto.getId());
+                }
+                else
+                {
+                    activity.getCropPhotoViewModel().setId(null);
+                }
+
                 activity.getNavController().navigate(R.id.action_modelFragment_to_selectPhotoOptionsFragment);
             }
         });
@@ -147,6 +197,7 @@ public class ModelFragment extends Fragment
         binding.addTopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                activity.getCropPhotoViewModel().reset();
                 activity.getCropPhotoViewModel().setClothingType(ClothingType.TOP);
                 activity.getNavController().navigate(R.id.action_modelFragment_to_selectPhotoOptionsFragment);
             }
@@ -155,6 +206,7 @@ public class ModelFragment extends Fragment
         binding.addBottomButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                activity.getCropPhotoViewModel().reset();
                 activity.getCropPhotoViewModel().setClothingType(ClothingType.BOTTOM);
                 activity.getNavController().navigate(R.id.action_modelFragment_to_selectPhotoOptionsFragment);
             }
@@ -162,6 +214,29 @@ public class ModelFragment extends Fragment
 
         binding.topsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
         binding.bottomsRecyclerView.setLayoutManager(new LinearLayoutManager(context));
+
+        List<Photo> headPhotos = new ArrayList<>();
+
+        try
+        {
+            headPhotos = activity.getApplicationDbHandler().getHeadPhotoTable().readAll();
+
+            if (headPhotos.size() > 0)
+            {
+                currentHeadPhoto = headPhotos.get(0);
+                binding.headButtonImageView.setImageBitmap(BitmapFactory.decodeByteArray(currentHeadPhoto.getBytes(), 0, currentHeadPhoto.getBytes().length));
+            }
+            else
+            {
+                binding.headButtonImageView.setImageResource(R.drawable.ic_baseline_add_box_24);
+                currentHeadPhoto = null;
+            }
+
+        }
+        catch (DatabaseException e)
+        {
+            e.printStackTrace();
+        }
 
         List<Photo> topPhotos = new ArrayList<>();
 
