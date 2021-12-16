@@ -1,10 +1,15 @@
 package ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor;
 
+import android.app.Notification;
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -115,23 +120,29 @@ public class SaveCroppedPhotoFragment extends Fragment {
                 Photo photo = new Photo()
                         .setBytes(bitmapData);
 
+                String notificationDescription;
+
                 try {
                     if (viewModel.getId() != -1) {
                         photo.setId(viewModel.getId());
 
                         if (viewModel.getClothingType() == ClothingType.TOP) {
                             activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().update(photo);
+                            notificationDescription = "Edited photo for upper body successfully!";
                         }
                         else {
                             activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().update(photo);
+                            notificationDescription = "Edited photo for lower body successfully!";
                         }
                     }
                     else {
                         if (viewModel.getClothingType() == ClothingType.TOP) {
                             activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().create(photo);
+                            notificationDescription = "Saved photo for upper body successfully!";
                         }
                         else {
                             activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().create(photo);
+                            notificationDescription = "Saved photo for lower body successfully!";
                         }
                     }
 
@@ -139,7 +150,34 @@ public class SaveCroppedPhotoFragment extends Fragment {
 
                 } catch (DatabaseException e) {
                     e.printStackTrace();
+                    if (viewModel.getId() != -1) {
+                        notificationDescription = "Something wrong happened. Cannot save the changes.";
+                    }
+                    else {
+                        notificationDescription = "Something wrong happened. Cannot save the photo.";
+                    }
                 }
+
+                Intent newIntent = new Intent(activity, MainActivity.class);
+                newIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                int requestCode = photo.hashCode();
+                PendingIntent pendingIntent = PendingIntent.getActivity(activity,
+                        requestCode, newIntent, PendingIntent.FLAG_IMMUTABLE);
+
+                NotificationCompat.Builder builder = new NotificationCompat.Builder(
+                        activity,
+                        MainActivity.APPLICATION_NOTIFICATION_CHANNEL)
+                        .setSmallIcon(R.drawable.ic_android_black_24dp)
+                        .setContentTitle("Virtual Dressing Room")
+                        .setContentText(notificationDescription)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setContentIntent(pendingIntent)
+                        .setAutoCancel(true);
+                Notification notification = builder.build();
+
+                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(activity);
+                notificationManagerCompat.notify(requestCode, notification);
 
                 activity.getNavController().navigate(R.id.action_saveCroppedPhotoFragment_to_modelFragment);
             }
@@ -147,8 +185,4 @@ public class SaveCroppedPhotoFragment extends Fragment {
 
         return view;
     }
-
-//    public void setResultImageBitmap(Bitmap bitmap) {
-//        resultImageView.setImageBitmap(bitmap);
-//    }
 }
