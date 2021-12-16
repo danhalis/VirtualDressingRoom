@@ -116,26 +116,42 @@ public class SaveCroppedPhotoFragment extends Fragment {
                         .setBytes(bitmapData);
 
                 try {
-                    if (viewModel.getId() != -1) {
-                        photo.setId(viewModel.getId());
-
-                        if (viewModel.getClothingType() == ClothingType.TOP) {
-                            activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().update(photo);
+                    if (viewModel.getIsHead())
+                    {
+                        if (activity.getApplicationDbHandler().getHeadPhotoTable().readAll().size() == 0)
+                        {
+                            activity.getApplicationDbHandler().getHeadPhotoTable().create(photo);
                         }
-                        else {
-                            activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().update(photo);
-                        }
-                    }
-                    else {
-                        if (viewModel.getClothingType() == ClothingType.TOP) {
-                            activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().create(photo);
-                        }
-                        else {
-                            activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().create(photo);
+                        else
+                        {
+                            Photo oldPhoto = activity.getApplicationDbHandler().getHeadPhotoTable().read(viewModel.getId());
+                            photo.setId(oldPhoto.getId());
+                            activity.getApplicationDbHandler().getHeadPhotoTable().update(photo);
                         }
                     }
+                    else
+                    {
+                        if (viewModel.getId() != -1) {
+                            photo.setId(viewModel.getId());
 
-                    activity.getCropPhotoViewModel().notifyChange();
+                            if (viewModel.getClothingType() == ClothingType.TOP) {
+                                activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().update(photo);
+                            }
+                            else {
+                                activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().update(photo);
+                            }
+                        }
+                        else {
+                            if (viewModel.getClothingType() == ClothingType.TOP) {
+                                activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().create(photo);
+                            }
+                            else {
+                                activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().create(photo);
+                            }
+                        }
+
+                        activity.getCropPhotoViewModel().notifyChange();
+                    }
 
                 } catch (DatabaseException e) {
                     e.printStackTrace();

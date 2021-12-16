@@ -88,13 +88,21 @@ public class CropPhotoFragment extends Fragment {
             }
             else {
                 Photo photo;
-                if (viewModel.getClothingType() == ClothingType.TOP) {
-                    photo = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().read(viewModel.getId());
+
+                if (viewModel.getIsHead())
+                {
+                    cropView.setBitmap(viewModel.getCurrentBitmap());
                 }
-                else {
-                    photo = activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().read(viewModel.getId());
+                else
+                {
+                    if (viewModel.getClothingType() == ClothingType.TOP) {
+                        photo = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().read(viewModel.getId());
+                    }
+                    else {
+                        photo = activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().read(viewModel.getId());
+                    }
+                    cropView.setBitmap(BitmapHelper.convertToBitmap(photo.getBytes()));
                 }
-                cropView.setBitmap(BitmapHelper.convertToBitmap(photo.getBytes()));
             }
         } catch (DatabaseException e) {
             e.printStackTrace();
