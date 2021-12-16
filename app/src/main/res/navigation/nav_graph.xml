@@ -72,5 +72,9 @@
         android:id="@+id/saveCroppedPhotoFragment"
         android:name="ca.qc.johnabbott.cs5a6.virtualdressroom.ui.editor.SaveCroppedPhotoFragment"
         android:label="fragment_save_cropped_photo"
-        tools:layout="@layout/fragment_save_cropped_photo" />
+        tools:layout="@layout/fragment_save_cropped_photo" >
+        <action
+            android:id="@+id/action_saveCroppedPhotoFragment_to_modelFragment"
+            app:destination="@id/modelFragment" />
+    </fragment>
 </navigation>

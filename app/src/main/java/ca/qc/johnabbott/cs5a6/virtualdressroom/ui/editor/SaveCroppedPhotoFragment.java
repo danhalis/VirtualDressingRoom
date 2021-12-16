@@ -122,11 +122,14 @@ public class SaveCroppedPhotoFragment extends Fragment {
                     else {
                         activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().create(photo);
                     }
+
+                    activity.getCropPhotoViewModel().notifyChange();
+
                 } catch (DatabaseException e) {
                     e.printStackTrace();
                 }
 
-                viewModel.reset();
+                activity.getNavController().navigate(R.id.action_saveCroppedPhotoFragment_to_modelFragment);
             }
         });
 
