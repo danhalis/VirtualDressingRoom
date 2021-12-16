@@ -70,14 +70,14 @@ public class GalleryPhotoTable extends Table<GalleryPhoto> {
     @Override
     public void initialize(SQLiteDatabase database){
 
+        database.insert("GalleryPhoto",null,toContentValues(new GalleryPhoto()
+                .setWebformatURL("https://as1.ftcdn.net/v2/jpg/02/22/85/16/1000_F_222851624_jfoMGbJxwRi5AWGdPgXKSABMnzCQo9RN.jpg")));
 
         database.insert("GalleryPhoto",null,toContentValues(new GalleryPhoto()
-
                 .setWebformatURL("https://images.costco-static.com/ImageDelivery/imageService?profileId=12026539&itemId=100801680-894&recipeName=680&swatchId=grey&viewId=1")));
+
         database.insert("GalleryPhoto",null,toContentValues(new GalleryPhoto()
-
                 .setWebformatURL("https://images.costco-static.com/ImageDelivery/imageService?profileId=12026539&itemId=100779328-894&recipeName=680&swatchId=black&viewId=1")));
-
 
         database.insert("GalleryPhoto",null,toContentValues(new GalleryPhoto()
 
@@ -106,11 +106,11 @@ public class GalleryPhotoTable extends Table<GalleryPhoto> {
         database.insert("GalleryPhoto",null,toContentValues(new GalleryPhoto()
 
                 .setWebformatURL("https://images.costco-static.com/ImageDelivery/imageService?profileId=12026539&itemId=100776377-894&recipeName=680&swatchId=black&viewId=1")));
-        database.insert("GalleryPhoto",null,toContentValues(new GalleryPhoto()
 
+        database.insert("GalleryPhoto",null,toContentValues(new GalleryPhoto()
                 .setWebformatURL("https://richmedia.ca-richimage.com/ImageDelivery/imageService?profileId=12026539&id=1673030&recipeId=496")));
-        database.insert("GalleryPhoto",null,toContentValues(new GalleryPhoto()
 
+        database.insert("GalleryPhoto",null,toContentValues(new GalleryPhoto()
                 .setWebformatURL("https://richmedia.ca-richimage.com/ImageDelivery/imageService?profileId=12026539&id=2709347&recipeId=496")));
     }
 
