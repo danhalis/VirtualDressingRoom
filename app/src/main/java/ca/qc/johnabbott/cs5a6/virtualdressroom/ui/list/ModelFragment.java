@@ -151,7 +151,7 @@ public class ModelFragment extends Fragment
             }
         });
 
-        binding.addTopButton.setOnClickListener(new View.OnClickListener() {
+        binding.addBottomButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 activity.getCropPhotoViewModel().setClothingType(ClothingType.BOTTOM);
