@@ -12,6 +12,8 @@ public class CropPhotoViewModel extends ObservableModel<CropPhotoViewModel> {
 
     private ClothingType clothingType;
 
+    private boolean isHead;
+
     public Bitmap getCurrentBitmap() {
         return currentBitmap;
     }
@@ -41,10 +43,21 @@ public class CropPhotoViewModel extends ObservableModel<CropPhotoViewModel> {
         this.clothingType = type;
     }
 
+    public boolean getIsHead()
+    {
+        return isHead;
+    }
+
+    public void setIsHead(boolean isItAHead)
+    {
+        isHead = isItAHead;
+    }
+
     public void reset() {
         id = null;
         clothingType = null;
         currentBitmap = null;
+        isHead = false;
     }
 
     @Override

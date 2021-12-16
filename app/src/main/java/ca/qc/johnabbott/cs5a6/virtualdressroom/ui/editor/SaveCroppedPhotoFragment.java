@@ -120,33 +120,51 @@ public class SaveCroppedPhotoFragment extends Fragment {
                 Photo photo = new Photo()
                         .setBytes(bitmapData);
 
-                String notificationDescription;
+                String notificationDescription = "";
 
                 try {
-                    if (viewModel.getId() != -1) {
-                        photo.setId(viewModel.getId());
+                    if (viewModel.getIsHead())
+                    {
+                        if (activity.getApplicationDbHandler().getHeadPhotoTable().readAll().size() == 0)
+                        {
+                            activity.getApplicationDbHandler().getHeadPhotoTable().create(photo);
+                        }
+                        else
+                        {
+                            Photo oldPhoto = activity.getApplicationDbHandler().getHeadPhotoTable().read(viewModel.getId());
+                            photo.setId(oldPhoto.getId());
+                            activity.getApplicationDbHandler().getHeadPhotoTable().update(photo);
+                        }
 
-                        if (viewModel.getClothingType() == ClothingType.TOP) {
-                            activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().update(photo);
-                            notificationDescription = "Edited photo for upper body successfully!";
+                        notificationDescription = "Saved photo for head successfully!";
+                    }
+                    else
+                    {
+                        if (viewModel.getId() != -1) {
+                            photo.setId(viewModel.getId());
+
+                            if (viewModel.getClothingType() == ClothingType.TOP) {
+                                activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().update(photo);
+                                notificationDescription = "Edited photo for upper body successfully!";
+                            }
+                            else {
+                                activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().update(photo);
+                                notificationDescription = "Edited photo for lower body successfully!";
+                            }
                         }
                         else {
-                            activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().update(photo);
-                            notificationDescription = "Edited photo for lower body successfully!";
+                            if (viewModel.getClothingType() == ClothingType.TOP) {
+                                activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().create(photo);
+                                notificationDescription = "Saved photo for upper body successfully!";
+                            }
+                            else {
+                                activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().create(photo);
+                                notificationDescription = "Saved photo for lower body successfully!";
+                            }
                         }
-                    }
-                    else {
-                        if (viewModel.getClothingType() == ClothingType.TOP) {
-                            activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().create(photo);
-                            notificationDescription = "Saved photo for upper body successfully!";
-                        }
-                        else {
-                            activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().create(photo);
-                            notificationDescription = "Saved photo for lower body successfully!";
-                        }
-                    }
 
-                    activity.getCropPhotoViewModel().notifyChange();
+                        activity.getCropPhotoViewModel().notifyChange();
+                    }
 
                 } catch (DatabaseException e) {
                     e.printStackTrace();

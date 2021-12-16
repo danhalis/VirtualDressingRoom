@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 APPLICATION_NOTIFICATION_CHANNEL,
                 "Virtual Dressing Room",
                 NotificationManager.IMPORTANCE_DEFAULT);
-        channel.setDescription("This channel notify the successful state when saving pictures in the app.");
+        channel.setDescription("This channel notifies the successful state when saving pictures in the app.");
         NotificationManager notificationManager = getSystemService(NotificationManager.class);
         notificationManager.createNotificationChannel(channel);
     }
