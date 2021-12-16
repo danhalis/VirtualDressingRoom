@@ -125,6 +125,8 @@ public class SaveCroppedPhotoFragment extends Fragment {
                 } catch (DatabaseException e) {
                     e.printStackTrace();
                 }
+
+                viewModel.reset();
             }
         });
 
