@@ -79,6 +79,28 @@ public class CropPhotoFragment extends Fragment {
         }
     }
 
+    private void loadImageIntoCropView() {
+        try {
+            Long photoId = viewModel.getId();
+
+            if (photoId == -1) {
+                cropView.setBitmap(viewModel.getCurrentBitmap());
+            }
+            else {
+                Photo photo;
+                if (viewModel.getClothingType() == ClothingType.TOP) {
+                    photo = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().read(viewModel.getId());
+                }
+                else {
+                    photo = activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().read(viewModel.getId());
+                }
+                cropView.setBitmap(BitmapHelper.convertToBitmap(photo.getBytes()));
+            }
+        } catch (DatabaseException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -92,19 +114,7 @@ public class CropPhotoFragment extends Fragment {
         cropView = view.findViewById(R.id.cropView);
         cropView.setFragment(this);
 
-        try {
-            Long photoId = viewModel.getId();
-
-            if (photoId == -1) {
-                cropView.setBitmap(viewModel.getCurrentBitmap());
-            }
-            else {
-                Photo photo = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().read(viewModel.getId());
-                cropView.setBitmap(BitmapHelper.convertToBitmap(photo.getBytes()));
-            }
-        } catch (DatabaseException e) {
-            e.printStackTrace();
-        }
+        loadImageIntoCropView();
 
         resultImageView = view.findViewById(R.id.cropResultImageView);
 
@@ -120,25 +130,7 @@ public class CropPhotoFragment extends Fragment {
                 ViewHelper.replaceView(cropView, newCropView);
                 cropView = newCropView;
 
-                try {
-                    Long photoId = viewModel.getId();
-
-                    if (photoId == -1) {
-                        cropView.setBitmap(viewModel.getCurrentBitmap());
-                    }
-                    else {
-                        Photo photo;
-                        if (viewModel.getClothingType() == ClothingType.TOP) {
-                            photo = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().read(viewModel.getId());
-                        }
-                        else {
-                            photo = activity.getApplicationDbHandler().getLowerBodyOutfitPhotoTable().read(viewModel.getId());
-                        }
-                        cropView.setBitmap(BitmapHelper.convertToBitmap(photo.getBytes()));
-                    }
-                } catch (DatabaseException e) {
-                    e.printStackTrace();
-                }
+                loadImageIntoCropView();
 
                 resultImageView.setImageBitmap(null);
             }
