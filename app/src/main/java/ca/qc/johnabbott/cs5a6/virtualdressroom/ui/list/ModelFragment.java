@@ -23,6 +23,8 @@ import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingItem;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.ClothingType;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.DatabaseException;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.helper.BitmapHelper;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.viewmodels.CropPhotoViewModel;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.ui.viewmodels.ObservableModel;
 
 /**
  * A fragment representing a list of Items.
@@ -59,6 +61,51 @@ public class ModelFragment extends Fragment
         {
             clothingColumnCount = getArguments().getInt(ARG_CLOTHING_LIST_COLUMN_COUNT);
         }
+
+        MainActivity activity = (MainActivity) getActivity();
+
+        activity.getCropPhotoViewModel().addOnUpdateListener(this, new ObservableModel.OnUpdateListener<CropPhotoViewModel>()
+        {
+            @Override
+            public void onUpdate(CropPhotoViewModel item)
+            {
+                ClothingRecyclerViewAdapter adapter = (ClothingRecyclerViewAdapter) binding.topsRecyclerView.getAdapter();
+
+                List<Photo> photos = new ArrayList<>();
+
+                List<ClothingItem> clothingItems = new ArrayList<>();
+
+                try
+                {
+                    if (item.getClothingType() == ClothingType.TOP)
+                    {
+                        photos = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().readAll();
+                    }
+                    else
+                    {
+                        adapter = (ClothingRecyclerViewAdapter) binding.bottomsRecyclerView.getAdapter();
+
+                        photos = activity.getApplicationDbHandler().getUpperBodyOutfitPhotoTable().readAll();
+                    }
+                }
+                catch (Exception e)
+                {
+                    System.out.println("Error: " + e);
+                }
+
+                for (int i = 0; i < photos.size(); i++)
+                {
+                    Photo thePhoto = photos.get(i);
+                    clothingItems.set(i, new ClothingItem(thePhoto.getId().intValue(), item.getClothingType(), thePhoto.getBytes()));
+                }
+
+                adapter.setClothingItems(clothingItems);
+
+                adapter.notifyDataSetChanged();
+            }
+
+        });
+
     }
 
     @Override

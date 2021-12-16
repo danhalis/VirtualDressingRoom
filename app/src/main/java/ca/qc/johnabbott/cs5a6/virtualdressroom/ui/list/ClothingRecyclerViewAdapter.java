@@ -44,6 +44,16 @@ public class ClothingRecyclerViewAdapter extends RecyclerView.Adapter<ClothingRe
         }
     }
 
+    public void setClothingItems(List<ClothingItem> theClothingItems)
+    {
+        clothingItems = theClothingItems;
+    }
+
+    public List<ClothingItem> getClothingItems()
+    {
+        return this.clothingItems;
+    }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
