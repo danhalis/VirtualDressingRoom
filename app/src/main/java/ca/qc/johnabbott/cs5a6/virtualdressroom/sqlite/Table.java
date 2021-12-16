@@ -120,7 +120,7 @@ public abstract class Table<T extends Identifiable<Long>> implements CRUDReposit
      *       trying to get a second writable database will throw an error, hence the parameter.
      * @param database
      */
-    public void initialize(SQLiteDatabase database) throws ParseException, DatabaseException {
+    public void initialize(SQLiteDatabase database) throws DatabaseException {
 
     }
 
@@ -146,7 +146,7 @@ public abstract class Table<T extends Identifiable<Long>> implements CRUDReposit
      * Create the table in the sqlite database.
      * @param database
      */
-    public void createTable(SQLiteDatabase database) throws DatabaseException, ParseException {
+    public void createTable(SQLiteDatabase database) throws DatabaseException {
         database.execSQL(getCreateTableStatement());
         if(hasInitialData())
             initialize(database);

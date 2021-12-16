@@ -1,7 +1,5 @@
-package ca.qc.johnabbott.cs5a6.virtualdressroom;
+package ca.qc.johnabbott.cs5a6.virtualdressroom.ui.selector;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
@@ -9,11 +7,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 
-import ca.qc.johnabbott.cs5a6.virtualdressroom.model.GalleryPhoto;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.MainActivity;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.R;
+import ca.qc.johnabbott.cs5a6.virtualdressroom.data.models.GalleryPhoto;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.placeholder.PlaceholderContent.PlaceholderItem;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.databinding.FragmentSelectPhotoBinding;
 

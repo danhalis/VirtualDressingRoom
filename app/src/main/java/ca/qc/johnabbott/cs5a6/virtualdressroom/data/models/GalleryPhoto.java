@@ -1,4 +1,4 @@
-package ca.qc.johnabbott.cs5a6.virtualdressroom.model;
+package ca.qc.johnabbott.cs5a6.virtualdressroom.data.models;
 
 import android.content.Context;
 import ca.qc.johnabbott.cs5a6.virtualdressroom.sqlite.Identifiable;

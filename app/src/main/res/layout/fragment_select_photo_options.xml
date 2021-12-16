@@ -6,30 +6,27 @@
     android:background="@drawable/background_color"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SelectPhotoOptionsFragment">
+    tools:context=".ui.options.SelectPhotoOptionsFragment">
 
     <!-- TODO: Update blank fragment layout -->
-
 
 
     <Button
         android:id="@+id/SelectPhotoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select a photo of yourself"
         app:layout_constraintBottom_toTopOf="@+id/CameraButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.555"
         app:layout_constraintStart_toStartOf="parent"
 
-        app:layout_constraintVertical_bias="0.691" />
+        />
 
     <Button
         android:id="@+id/CameraButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="224dp"
-        android:text="Take a photo of yourself"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.555"
