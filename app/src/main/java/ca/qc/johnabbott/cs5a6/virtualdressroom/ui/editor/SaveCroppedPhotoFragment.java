@@ -88,16 +88,16 @@ public class SaveCroppedPhotoFragment extends Fragment {
         assert activity != null;
         viewModel = activity.getCropPhotoViewModel();
 
-        //get the spinner from the xml.
-        Spinner dropdown = view.findViewById(R.id.outfitTypeSpinner);
-        // Create an ArrayAdapter using the string array and a default spinner layout
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity,
-                R.array.outfit_types,
-                android.R.layout.simple_spinner_item);
-        // Specify the layout to use when the list of choices appears
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
-        dropdown.setAdapter(adapter);
+//        //get the spinner from the xml.
+//        Spinner dropdown = view.findViewById(R.id.outfitTypeSpinner);
+//        // Create an ArrayAdapter using the string array and a default spinner layout
+//        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(activity,
+//                R.array.outfit_types,
+//                android.R.layout.simple_spinner_item);
+//        // Specify the layout to use when the list of choices appears
+//        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        // Apply the adapter to the spinner
+//        dropdown.setAdapter(adapter);
 
         resultImageView = view.findViewById(R.id.cropResultImageView);
         resultImageView.setImageBitmap(viewModel.getCurrentBitmap());
