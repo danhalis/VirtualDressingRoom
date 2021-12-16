@@ -20,7 +20,7 @@ import java.text.ParseException;
 
 public class GalleryPhotoDBHandler extends SQLiteOpenHelper {
 
-    public static final String DATABASE_FILE_NAME = "110galleryPhotos.db";
+    public static final String DATABASE_FILE_NAME = "222galleryPhotos.db";
     public static final int DATABASE_VERSION = 1;
     public enum State { NONE, BEFORE_CHOOSE,CHOOSED,BEFORE_EDIT, EDITED, BEFORE_CREATE, CREATED}
 
